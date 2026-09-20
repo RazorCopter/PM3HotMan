@@ -1,0 +1,16 @@
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[=] Creating initial preferences file
+[+] Saved to json file C:\Users\gianv\Desktop\Prox\ProxLatest\client\/.proxmark3/preferences.json
+  [ Proxmark3 ]
+
+    MCU....... AT91SAM7S512 Rev B
+    Memory.... 512 KB ( 74% used )
+    Target.... PM3 GENERIC
+
+    Client.... Iceman/master/v4.21611-636-gda509461b 2026-08-02 01:15:35
+    Bootrom... Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:23 567cf9c5f
+    OS........ Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:45 567cf9c5f
+
+
+[=] No previous history could be loaded

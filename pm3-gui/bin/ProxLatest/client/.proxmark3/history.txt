@@ -1,0 +1,28 @@
+hw version
+auto
+hf mf info
+hw version
+hf mf info
+hw version
+hf mf info
+hf mf autopwn
+hw version
+hf mf info
+hf mf autopwn
+hf mf info
+hw version
+hf mf info
+hf mf autopwn
+hw version
+hf mf info
+hf mf autopwn
+auto
+data plot
+hw info
+hw ver
+hw tune
+hw status
+hw pingtime
+hw version
+hf mf info
+hw version

@@ -1,0 +1,40 @@
+[+] About to use the following files:
+[+]    bootrom.elf
+[+]    fullimage.elf
+[+] Loading ELF file bootrom.elf
+[+] ELF file version Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:23 567cf9c5f
+
+[+] Loading ELF file fullimage.elf
+[+] ELF file version Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:45 567cf9c5f
+
+[+] Waiting for Proxmark3 to appear on COM3
+ found
+[+] Entering bootloader...
+[+] (Press and release the button only to abort)
+[+] Trigger restart...
+[+] Waiting for Proxmark3 to appear on COM3
+ found
+[=] Available memory on this board: 512K bytes
+
+[=] Permitted flash range: 0x00100000-0x00180000
+[+] Loading usable ELF segments:
+[+]    0: V 0x00100000 P 0x00100000 (0x00000200->0x00000200) [R X] @0x94
+[+]    1: V 0x00200000 P 0x00100200 (0x00000f4c->0x00000f4c) [R X] @0x298
+
+[+] Loading usable ELF segments:
+[+]    0: V 0x00102000 P 0x00102000 (0x0005b454->0x0005b454) [R X] @0x98
+[+]    1: V 0x00200000 P 0x0015d454 (0x00001eb4->0x00001eb4) [R X] @0x5b4f0
+[=] Note: Extending previous segment from 0x5b454 to 0x5d308 bytes
+
+[+] Flashing...
+[+] Writing segments for file: bootrom.elf
+[+]  0x00100000..0x001001ff [0x200 / 1 blocks]
+[+]  0x00100200..0x0010114b [0xf4c / 8 blocks]
+
+[+] Writing segments for file: fullimage.elf
+[+]  0x00102000..0x0015f307 [0x5d308 / 746 blocks]
+
+[+] All done
+
+[=] Have a nice day!
+

@@ -1,0 +1,31 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: hf mf info
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[usb|script] pm3 --> hf mf info
+
+[=] --- ISO14443-a Information -----------------------------
+[+]  UID: 17 E6 F9 B7 
+[+] ATQA: 00 04
+[+]  SAK: 08 [1]
+
+[=] --- Keys Information
+[+] loaded 2 user keys
+[+] loaded 63 hardcoded keys
+[+] Sector 0 key A... A0A1A2A3A4A5
+[+] Sector 1 key A... A0A1A2A3A4A5
+[+] Block 0.......... 17E6F9B7BF0804006263646566676869 | bcdefghi
+
+[=] --- Fingerprint
+[+] Fudan based card
+
+[=] --- Magic Tag Information
+[=] <n/a>
+
+[=] --- PRNG Information
+[#] Static nonce....... 01200145
+[+] Static nonce... yes
+

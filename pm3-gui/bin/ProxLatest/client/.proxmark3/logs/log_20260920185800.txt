@@ -1,0 +1,46 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: auto
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[usb|script] pm3 --> auto
+[=] lf search
+
+[=] Note: False Positives ARE possible
+[=] 
+[=] Checking for known tags...
+[=] 
+[=] Press <Enter> to exit
+[=] [241664/500000]
+[=] [372736/500000]
+[=] [500000/500000]
+[=] Done: 500000 samples (500000 bytes)
+[+] Got 500000 samples
+[=] signal looks like noise
+[-] COTAG demod failed - too many Manchester errors  ( 6 Manchester bits at rf/768 )
+
+[=] Searching for auth LF and special cases...
+[=] Couldn't identify a chipset
+[?] Hint: try `hf search` - since tag might not be LF
+
+[=] hf search
+
+[=] ---------- ISO14443-A Information ----------
+[+]  UID: 17 E6 F9 B7   ( ONUID, re-used )
+[+] ATQA: 00 04
+[+]  SAK: 08 [2]
+[+] Possible types:
+[+]    MIFARE Classic 1K
+[=] 
+[=] Proprietary non iso14443-4 card found
+[=] RATS not supported
+[#] Static nonce....... 01200145
+[+] Static nonce....... yes
+
+[?] Hint: Try `hf mf info`
+
+
+[+] Valid ISO 14443-A tag found
+

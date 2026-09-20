@@ -1,0 +1,7 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: hw version
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC

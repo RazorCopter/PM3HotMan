@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PM3 HotMan — Connetti</title>
+    <link rel="stylesheet" href="css/design.css"/>
+    <link rel="stylesheet" href="css/connect.css"/>
+</head>
+<body>
+
+<!-- Titlebar -->
+<div class="titlebar">
+    <div class="titlebar__logo">
+        <svg class="titlebar__logo-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#7c3aed" stroke-width="1.5"/>
+            <path d="M8 12h8M12 8v8" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="3" fill="#7c3aed" opacity="0.6"/>
+        </svg>
+        <span class="titlebar__name">PM3 <span>HotMan</span></span>
+    </div>
+    <div class="titlebar__spacer"></div>
+    <div class="titlebar__controls">
+        <button class="titlebar__btn" id="btn-minimize" title="Riduci a icona">─</button>
+        <button class="titlebar__btn close" id="btn-close" title="Chiudi">✕</button>
+    </div>
+</div>
+
+<!-- Main -->
+<div class="connect-root">
+
+    <!-- Background grid -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+
+    <!-- Center card -->
+    <div class="connect-card animate-scale-in" role="main" aria-label="Connetti a Proxmark3">
+
+        <!-- Logo -->
+        <div class="connect-logo">
+            <div class="logo-ring animate-glow">
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                    <circle cx="26" cy="26" r="24" stroke="url(#g1)" stroke-width="2"/>
+                    <circle cx="26" cy="26" r="14" fill="rgba(124,58,237,0.15)" stroke="rgba(124,58,237,0.4)" stroke-width="1"/>
+                    <circle cx="26" cy="26" r="5" fill="#7c3aed"/>
+                    <path d="M26 8 L26 18M26 34 L26 44M8 26 L18 26M34 26 L44 26" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="g1" x1="0" y1="0" x2="52" y2="52">
+                            <stop offset="0%" stop-color="#7c3aed"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div>
+                <h1 class="connect-title">PM3 <span class="text-accent">HotMan</span></h1>
+                <p class="connect-subtitle">Proxmark3 GUI — Iceman Fork</p>
+            </div>
+        </div>
+
+        <div class="glow-line mb-4"></div>
+
+        <!-- Form -->
+        <form class="connect-form" id="form-connect" autocomplete="off">
+
+            <!-- PM3 executable -->
+            <div class="input-group">
+                <label class="input-label" for="pm3-path">
+                    <span class="label-icon">⚙</span>
+                    Percorso proxmark3.exe
+                </label>
+                <div class="path-input-wrap">
+                    <input type="text" id="pm3-path" name="pm3-path"
+                           placeholder="C:\...\ProxLatest\client\proxmark3.exe"
+                           spellcheck="false"/>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">
+                        Sfoglia…
+                    </button>
+                </div>
+                <span class="input-hint" id="pm3-path-hint"></span>
+            </div>
+
+            <!-- COM Port -->
+            <div class="input-group">
+                <label class="input-label" for="com-port">
+                    <span class="label-icon">🔌</span>
+                    Porta COM
+                    <button type="button" class="btn-scan" id="btn-scan-ports" title="Aggiorna lista porte">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <path d="M21 2v6h-6M3 12A9 9 0 0 1 15 3.27M3 22v-6h6M21 12A9 9 0 0 1 9 20.73"/>
+                        </svg>
+                        Aggiorna
+                    </button>
+                </label>
+                <div class="port-select-wrap">
+                    <select id="com-port" name="com-port">
+                        <option value="">— Scansione porte in corso… —</option>
+                    </select>
+                    <div class="port-status" id="port-status"></div>
+                </div>
+                <div class="port-list" id="port-list"></div>
+            </div>
+
+            <!-- Connect button -->
+            <button type="submit" class="btn btn-primary btn-lg btn-full" id="btn-connect">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18.364 5.636 16.95 7.05A7 7 0 1 0 19 12h-2"/>
+                    <path d="m22 2-7 7"/>
+                </svg>
+                Connetti al Proxmark3
+            </button>
+
+            <!-- Status -->
+            <div class="connect-status" id="connect-status" aria-live="polite"></div>
+
+        </form>
+
+        <div class="glow-line mt-4 glow-line-cyan"></div>
+
+        <!-- Footer info -->
+        <div class="connect-footer">
+            <div class="footer-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/>
+                </svg>
+                Iceman Fork
+            </div>
+            <div class="footer-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+                </svg>
+                Windows GUI
+            </div>
+            <div class="footer-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                GPL v3
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/connect.js" defer></script>
+</body>
+</html>

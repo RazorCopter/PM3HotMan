@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PM3 HotMan — Dashboard</title>
+    <link rel="stylesheet" href="css/design.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+
+<!-- Titlebar -->
+<div class="titlebar">
+    <div class="titlebar__logo">
+        <svg class="titlebar__logo-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#7c3aed" stroke-width="1.5"/>
+            <path d="M8 12h8M12 8v8" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="3" fill="#7c3aed" opacity="0.6"/>
+        </svg>
+        <span class="titlebar__name">PM3 <span>HotMan</span></span>
+    </div>
+
+    <div class="titlebar__status" id="titlebar-status">
+        <div class="status-dot connecting" id="status-dot"></div>
+        <span class="text-sm text-muted" id="status-label">Connessione…</span>
+        <span class="badge badge-muted text-xs mono" id="status-port"></span>
+    </div>
+
+    <div class="titlebar__spacer"></div>
+
+    <!-- Search -->
+    <div class="titlebar-search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="search" id="global-search" placeholder="Cerca comando…" autocomplete="off" spellcheck="false"/>
+        <kbd>Ctrl+K</kbd>
+    </div>
+
+    <div class="titlebar__controls">
+        <button class="titlebar__btn" id="btn-terminal" title="Terminale raw" data-tooltip="Terminale">⌨</button>
+        <button class="titlebar__btn" id="btn-disconnect" title="Disconnetti">⏹</button>
+        <button class="titlebar__btn" id="btn-minimize" title="Minimizza">─</button>
+        <button class="titlebar__btn" id="btn-maximize" title="Massimizza">□</button>
+        <button class="titlebar__btn close" id="btn-close" title="Chiudi">✕</button>
+    </div>
+</div>
+
+<!-- App Shell -->
+<div class="app-shell">
+
+    <!-- ═══════════════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Categorie comandi">
+
+        <!-- Comandi preferiti / recenti -->
+        <div class="sidebar-section">
+            <div class="sidebar-heading">Rapido</div>
+            <button class="sidebar-item active" data-view="home" id="nav-home">
+                <span class="sidebar-icon">🏠</span>
+                <span>Home</span>
+            </button>
+            <button class="sidebar-item" data-view="auto" id="nav-auto">
+                <span class="sidebar-icon">🔍</span>
+                <span>Auto-Detection</span>
+                <span class="sidebar-badge">Hotkey</span>
+            </button>
+            <button class="sidebar-item" data-view="recent" id="nav-recent">
+                <span class="sidebar-icon">⏱</span>
+                <span>Usati di recente</span>
+            </button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- HF -->
+        <div class="sidebar-section">
+            <div class="sidebar-heading" style="color: #9d5cf6;">📶 HF — 13.56 MHz</div>
+            <button class="sidebar-item" data-view="hf/nfc">
+                <span class="sidebar-icon">📲</span><span>NFC / ISO 14443-A</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/mf">
+                <span class="sidebar-icon">🃏</span><span>MIFARE Classic</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/mfu">
+                <span class="sidebar-icon">📋</span><span>Ultralight / NTAG</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/desfire">
+                <span class="sidebar-icon">🔐</span><span>MIFARE DESFire</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/iclass">
+                <span class="sidebar-icon">🏢</span><span>iClass / SEOS</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/felica">
+                <span class="sidebar-icon">🇯🇵</span><span>FeliCa</span>
+            </button>
+            <button class="sidebar-item" data-view="hf/15693">
+                <span class="sidebar-icon">📦</span><span>ISO 15693</span>
+            </button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- LF -->
+        <div class="sidebar-section">
+            <div class="sidebar-heading" style="color: #34d399;">📻 LF — 125 kHz</div>
+            <button class="sidebar-item" data-view="lf/em410x">
+                <span class="sidebar-icon">📻</span><span>EM410x</span>
+            </button>
+            <button class="sidebar-item" data-view="lf/hid">
+                <span class="sidebar-icon">🏷</span><span>HID Proximity</span>
+            </button>
+            <button class="sidebar-item" data-view="lf/t55xx">
+                <span class="sidebar-icon">🔄</span><span>T55xx</span>
+            </button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Other -->
+        <div class="sidebar-section">
+            <div class="sidebar-heading">Altro</div>
+            <button class="sidebar-item" data-view="hw">
+                <span class="sidebar-icon">🖥</span><span>Hardware</span>
+            </button>
+            <button class="sidebar-item" data-view="analyse">
+                <span class="sidebar-icon">🧠</span><span>Analisi & Dati</span>
+            </button>
+            <button class="sidebar-item" data-view="smart">
+                <span class="sidebar-icon">💳</span><span>Smart Card / EMV</span>
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- ═══════════════════════════════════════
+         CONTENT AREA
+    ═══════════════════════════════════════ -->
+    <main class="content-area" id="content-area" role="main">
+
+        <!-- Command View (category listing) -->
+        <div class="view" id="view-commands">
+            <div class="view-header">
+                <div>
+                    <h2 class="view-title" id="view-title">Home</h2>
+                    <p class="view-desc text-muted text-sm" id="view-desc"></p>
+                </div>
+            </div>
+            <div class="commands-grid" id="commands-grid"></div>
+        </div>
+
+        <!-- Command Detail / Form view -->
+        <div class="view hidden" id="view-detail">
+            <button class="btn-back" id="btn-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Indietro
+            </button>
+
+            <div class="detail-header">
+                <div class="detail-icon" id="detail-icon">🔍</div>
+                <div>
+                    <h2 class="detail-title" id="detail-title">Comando</h2>
+                    <p class="detail-desc text-muted" id="detail-desc"></p>
+                </div>
+                <div class="detail-cmd-badge">
+                    <span class="text-xs text-muted">Comando Proxmark3:</span>
+                    <code class="mono text-xs text-cyan" id="detail-cmd-preview"></code>
+                </div>
+            </div>
+
+            <div class="detail-form-area">
+                <div id="param-form" class="param-form"></div>
+
+                <div class="detail-actions">
+                    <button class="btn btn-primary btn-lg" id="btn-run">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Esegui
+                    </button>
+                    <button class="btn btn-secondary" id="btn-copy-cmd" title="Copia comando">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Copia
+                    </button>
+                </div>
+            </div>
+
+            <!-- Structured results (cards) moved to center -->
+            <div class="output-results center-results" id="output-results"></div>
+            
+        </div>
+
+        <!-- Search Results View -->
+        <div class="view hidden" id="view-search">
+            <div class="view-header">
+                <h2 class="view-title" id="search-title">Risultati ricerca</h2>
+            </div>
+            <div class="commands-grid" id="search-grid"></div>
+        </div>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════
+         OUTPUT PANEL
+    ═══════════════════════════════════════ -->
+    <div class="output-panel" id="output-panel">
+
+        <div class="output-header">
+            <div class="output-header-left">
+                <div class="output-indicator" id="output-indicator"></div>
+                <span class="output-title" id="output-title">Output</span>
+            </div>
+            <div class="output-header-right">
+                <button class="btn btn-icon btn-sm" id="btn-copy-output" title="Copia output negli appunti">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                </button>
+                <button class="btn btn-icon btn-sm" id="btn-clear-output" title="Cancella output">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Raw terminal output -->
+        <div class="output-raw" id="output-raw" aria-label="Output raw pm3"></div>
+
+        <!-- Running indicator -->
+        <div class="output-running hidden" id="output-running">
+            <div class="spinner"></div>
+            <span class="text-sm text-muted">Comando in esecuzione…</span>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════
+     TERMINAL OVERLAY
+═══════════════════════════════════════ -->
+<div class="terminal-overlay hidden" id="terminal-overlay" role="dialog" aria-label="Terminale raw">
+    <div class="terminal-window animate-scale-in">
+        <div class="terminal-header">
+            <div class="flex items-center gap-2">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+            </div>
+            <span class="text-sm text-muted">proxmark3 — Terminale raw</span>
+            <button class="btn btn-icon btn-sm" id="btn-close-terminal">✕</button>
+        </div>
+        <div class="terminal-body" id="terminal-body" aria-live="polite"></div>
+        <div class="terminal-input-bar">
+            <span class="terminal-prompt">pm3&gt;</span>
+            <input type="text" id="terminal-input" class="terminal-input mono"
+                   placeholder="Digita un comando proxmark3…" autocomplete="off" spellcheck="false"/>
+            <button class="btn btn-primary btn-sm" id="btn-terminal-send">Invia</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/commands.js" defer></script>
+<script src="js/parser.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/terminal.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>

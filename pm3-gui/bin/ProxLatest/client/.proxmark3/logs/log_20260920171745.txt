@@ -1,0 +1,38 @@
+[+] loaded `C:\Users\gianv\Documents\Progetti\PM3HotMan\ProxLatest\client\/.proxmark3/preferences.json`
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+  [ Proxmark3 ]
+
+    MCU....... AT91SAM7S512 Rev B
+    Memory.... 512 KB ( 74% used )
+    Target.... PM3 GENERIC
+
+    Client.... Iceman/master/v4.21611-636-gda509461b 2026-08-02 01:15:35
+    Bootrom... Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:23 567cf9c5f
+    OS........ Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:45 567cf9c5f
+
+
+[usb|script] pm3 --> hf mf info
+
+[=] --- ISO14443-a Information -----------------------------
+[+]  UID: 17 E6 F9 B7 
+[+] ATQA: 00 04
+[+]  SAK: 08 [1]
+
+[=] --- Keys Information
+[+] loaded 2 user keys
+[+] loaded 63 hardcoded keys
+[+] Sector 0 key A... A0A1A2A3A4A5
+[+] Sector 1 key A... A0A1A2A3A4A5
+[+] Block 0.......... 17E6F9B7BF0804006263646566676869 | bcdefghi
+
+[=] --- Fingerprint
+[+] Fudan based card
+
+[=] --- Magic Tag Information
+[=] <n/a>
+
+[=] --- PRNG Information
+[#] Static nonce....... 01200145
+[+] Static nonce... yes
+

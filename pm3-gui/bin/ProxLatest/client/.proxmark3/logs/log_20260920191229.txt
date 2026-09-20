@@ -1,0 +1,58 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: hw status
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[usb|script] pm3 --> hw status
+[#] Memory
+[#]   BigBuf_size............. 38368
+[#]   Available memory........ 38368
+[#] Tracing
+[#]   tracing ................ 0
+[#]   traceLen ............... 0
+[#] Current FPGA image
+[#]   mode.................... fpga_pm3_hf.ncd image 2s30vq100 31-05-2026 08:54:23
+[#] LF Sampling config
+[#]   [q] divisor............. 95 ( 125.00 kHz )
+[#]   [b] bits per sample..... 8
+[#]   [d] decimation.......... 1
+[#]   [a] averaging........... no
+[#]   [t] trigger threshold... 0
+[#]   [s] samples to skip..... 0 
+[#] 
+[#] LF T55XX config
+[#]            [r]               [a]   [b]   [c]   [d]   [e]   [f]   [g]
+[#]            mode            |start|write|write|write| read|write|write
+[#]                            | gap | gap |  0  |  1  | gap |  2  |  3
+[#] ---------------------------+-----+-----+-----+-----+-----+-----+------
+[#] fixed bit length (default) |  31 |  20 |  18 |  50 |  15 | n/a | n/a | 
+[#]     long leading reference |  31 |  20 |  18 |  50 |  15 | n/a | n/a | 
+[#]               leading zero |  31 |  20 |  18 |  40 |  15 | n/a | n/a | 
+[#]    1 of 4 coding reference |  31 |  20 |  18 |  34 |  15 |  50 |  66 | 
+[#] 
+[#] HF 14a config
+[#]   [a] Anticol override........... std    ( follow standard )
+[#]   [b] BCC override............... std    ( follow standard )
+[#]   [2] CL2 override............... std    ( follow standard )
+[#]   [3] CL3 override............... std    ( follow standard )
+[#]   [r] RATS override.............. std    ( follow standard )
+[#]   [m] Magsafe polling............ disabled
+[#]   [p] Polling loop annotation.... disabled 00000000000000000000000000000000
+[#] HF 14b config
+[#]   [p] Polling loop annotation.... disabled 00000000000000000000000000000000
+[#] Transfer Speed
+[#]   Sending packets to client...
+[#]   Time elapsed................... 500ms
+[#]   Bytes transferred.............. 365056
+[#]   Transfer Speed PM3 -> Client... 730112 bytes/s
+[#] Various
+[#]   Max stack usage..... 5352 / 8480 bytes
+[#]   Debug log level..... 1 ( error )
+[#]   ToSendMax........... 6
+[#]   ToSend BUFFERSIZE... 2308
+[#]   Slow clock.......... 32791 Hz
+[#] Installed StandAlone Mode
+[#]   LF HID26 standalone - aka SamyRun (Samy Kamkar)
+[#] 

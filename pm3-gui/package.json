@@ -1,0 +1,55 @@
+{
+  "name": "pm3-hotman-gui",
+  "version": "1.0.0",
+  "description": "Premium GUI for Proxmark3 (Iceman fork) on Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.pm3hotman.app",
+    "productName": "PM3 HotMan",
+    "npmRebuild": false,
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PM3 HotMan"
+    },
+    "extraResources": [
+      {
+        "from": "bin/",
+        "to": "bin/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
+  "keywords": [
+    "proxmark3",
+    "rfid",
+    "nfc",
+    "gui"
+  ],
+  "author": "PM3HotMan Contributors",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "node-pty": "^1.1.0",
+    "serialport": "^12.0.0"
+  }
+}

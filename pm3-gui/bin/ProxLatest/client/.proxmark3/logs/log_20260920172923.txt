@@ -1,0 +1,44 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: hw version
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[usb|script] pm3 --> hw version
+
+ [ Proxmark3 ]
+
+ [ Client ]
+  Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:15:35 567cf9c5f
+  Compiler.................. MinGW-w64 16.1.0
+  Platform.................. Windows (64b) / x86_64
+  Readline support.......... present
+  QT GUI support............ present
+  Native BT support......... absent
+  Python script support..... absent
+  Python SWIG support....... absent
+  Lua script support........ present ( 5.4.7 )
+  Lua SWIG support.......... present
+
+ [ Model ]
+  Firmware.................. PM3 GENERIC
+
+ [ ARM ]
+  Bootrom.... Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:23 567cf9c5f
+  OS......... Iceman/master/v4.21611-636-gda509461b-suspect 2026-08-02 01:13:45 567cf9c5f
+  Compiler... GCC 13.3.0
+
+ [ FPGA ] 
+ fpga_pm3_hf.ncd image 2s30vq100 31-05-2026 08:54:23
+ fpga_pm3_lf.ncd image 2s30vq100 31-05-2026 08:54:23
+ fpga_pm3_felica.ncd image 2s30vq100 31-05-2026 08:54:23
+ fpga_pm3_hf_15.ncd image 2s30vq100 31-05-2026 08:54:23
+
+ [ Hardware ]
+  --= uC: AT91SAM7S512 Rev B
+  --= Embedded Processor: ARM7TDMI
+  --= Internal SRAM size: 64K bytes
+  --= Architecture identifier: AT91SAM7Sxx Series
+  --= Embedded flash memory 512K bytes ( 74% used )
+

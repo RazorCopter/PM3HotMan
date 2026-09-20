@@ -1,0 +1,5 @@
+[+] Using UART port COM3
+[!!] Capabilities structure version sent by Proxmark3 is not the same as the one used by the client!
+[!!] Please flash the Proxmark3 with the same version as the client.
+[!!] ERROR: cannot communicate with the Proxmark3
+

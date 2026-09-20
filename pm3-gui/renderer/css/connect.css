@@ -1,0 +1,244 @@
+/* PM3 HotMan — Connection Screen */
+
+html, body { height: 100%; }
+
+.connect-root {
+    height: calc(100vh - var(--titlebar-h));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-void);
+}
+
+/* ─── Background decorations ─────────────────────────────────────────────── */
+.bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(124,58,237,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+}
+.orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+    top: -150px; left: -100px;
+}
+.orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%);
+    bottom: -120px; right: -80px;
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────── */
+.connect-card {
+    position: relative;
+    width: 460px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-xl);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: var(--sp-8);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(124,58,237,0.08) inset;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+/* Subtle top accent line */
+.connect-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: var(--r-full);
+}
+
+/* ─── Logo section ───────────────────────────────────────────────────────── */
+.connect-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+}
+
+.logo-ring {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(124,58,237,0.08);
+    border: 1px solid var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.connect-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.connect-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* ─── Form ───────────────────────────────────────────────────────────────── */
+.connect-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+.label-icon {
+    margin-right: 4px;
+    font-size: 0.9rem;
+}
+
+.path-input-wrap {
+    display: flex;
+    gap: var(--sp-2);
+}
+.path-input-wrap input { flex: 1; font-family: var(--font-mono); font-size: 0.78rem; }
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-height: 16px;
+    transition: color var(--dur-fast);
+}
+.input-hint.ok    { color: var(--success); }
+.input-hint.error { color: var(--error); }
+
+/* Port select */
+.port-select-wrap {
+    position: relative;
+}
+
+.btn-scan {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--accent-light);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--r-sm);
+    transition: background var(--dur-fast);
+    margin-left: auto;
+}
+.btn-scan:hover { background: var(--accent-dim); }
+.btn-scan svg { transition: transform 0.5s; }
+.btn-scan.spinning svg { animation: spin 0.7s linear infinite; }
+
+.port-status {
+    position: absolute;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* Port info cards */
+.port-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.port-info-card {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: border-color var(--dur-fast), background var(--dur-fast);
+    animation: fadeIn 0.2s var(--ease) both;
+}
+.port-info-card:hover { border-color: var(--accent-dim); background: var(--bg-active); }
+.port-info-card.selected { border-color: var(--accent); background: var(--bg-active); }
+
+.port-icon {
+    width: 28px; height: 28px;
+    border-radius: var(--r-sm);
+    background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.port-info-card .port-name {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.port-info-card .port-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+/* ─── Connect status ─────────────────────────────────────────────────────── */
+.connect-status {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all var(--dur-mid) var(--ease);
+    opacity: 0;
+}
+.connect-status.visible { opacity: 1; }
+.connect-status.info    { background: var(--info-dim);    color: var(--info);    border: 1px solid rgba(6,182,212,0.2); }
+.connect-status.success { background: var(--success-dim); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+.connect-status.error   { background: var(--error-dim);   color: var(--error);   border: 1px solid rgba(239,68,68,0.2); }
+.connect-status.warning { background: var(--warning-dim); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+.connect-footer {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+}
+
+.footer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-full);
+}

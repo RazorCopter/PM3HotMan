@@ -1,0 +1,172 @@
+[=] Output will be flushed after every print.
+
+[+] loaded `C:/Users/gianv/Documents/Progetti/PM3HotMan/ProxLatest/client/.proxmark3/preferences.json`
+[+] execute command from commandline: hf mf autopwn
+
+[+] Using UART port COM3
+[+] Communicating with PM3 over USB-CDC
+[usb|script] pm3 --> hf mf autopwn
+
+[#] Static nonce....... 01200145
+[+] loaded 8 user keys
+[+] loaded 63 hardcoded keys
+[=] Running strategy 1
+[=] .....
+[=] Running strategy 2
+[=] .....
+[+] Target sector   0 key type A -- found valid key [ A0A1A2A3A4A5 ]
+[+] Target sector   1 key type A -- found valid key [ A0A1A2A3A4A5 ]
+
+[+] Found 1 key candidates
+[+] target block    0 key type B -- found valid key [ B27665EC956A ]
+[+] Target sector   0 key type B -- found valid key [ B27665EC956A ]
+
+[+] Found 1 key candidates
+[+] target block    4 key type B -- found valid key [ 6D6963726F68 ]
+[+] Target sector   1 key type B -- found valid key [ 6D6963726F68 ]
+
+[+] Found 1 key candidates
+[+] target block    8 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   2 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block    8 key type B -- found valid key [ CF4854600910 ]
+[+] Target sector   2 key type B -- found valid key [ CF4854600910 ]
+
+[+] Found 1 key candidates
+[+] target block   12 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   3 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   12 key type B -- found valid key [ CF4854600910 ]
+[+] Target sector   3 key type B -- found valid key [ CF4854600910 ]
+
+[+] Found 1 key candidates
+[+] target block   16 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   4 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   16 key type B -- found valid key [ CF4854600910 ]
+[+] Target sector   4 key type B -- found valid key [ CF4854600910 ]
+
+[+] Found 1 key candidates
+[+] target block   20 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   5 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   20 key type B -- found valid key [ CF4854600910 ]
+[+] Target sector   5 key type B -- found valid key [ CF4854600910 ]
+
+[+] Found 1 key candidates
+[+] target block   24 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   6 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   24 key type B -- found valid key [ EE1F004EF906 ]
+[+] Target sector   6 key type B -- found valid key [ EE1F004EF906 ]
+
+[+] Found 1 key candidates
+[+] target block   28 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   7 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   28 key type B -- found valid key [ EF1E014FF807 ]
+[+] Target sector   7 key type B -- found valid key [ EF1E014FF807 ]
+
+[+] Found 1 key candidates
+[+] target block   32 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   8 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   32 key type B -- found valid key [ E0110E40F708 ]
+[+] Target sector   8 key type B -- found valid key [ E0110E40F708 ]
+
+[+] Found 1 key candidates
+[+] target block   36 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector   9 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   36 key type B -- found valid key [ E1100F41F609 ]
+[+] Target sector   9 key type B -- found valid key [ E1100F41F609 ]
+
+[+] Found 1 key candidates
+[+] target block   40 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector  10 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   40 key type B -- found valid key [ E2130C42F50A ]
+[+] Target sector  10 key type B -- found valid key [ E2130C42F50A ]
+
+[+] Found 1 key candidates
+[+] target block   44 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector  11 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   44 key type B -- found valid key [ E3120D43F40B ]
+[+] Target sector  11 key type B -- found valid key [ E3120D43F40B ]
+
+[+] Found 1 key candidates
+[+] target block   48 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector  12 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   48 key type B -- found valid key [ E4150A44F30C ]
+[+] Target sector  12 key type B -- found valid key [ E4150A44F30C ]
+
+[+] Found 1 key candidates
+[+] target block   52 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector  13 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   52 key type B -- found valid key [ E5140B45F20D ]
+[+] Target sector  13 key type B -- found valid key [ E5140B45F20D ]
+
+[+] Found 1 key candidates
+[+] target block   56 key type A -- found valid key [ 2B6756CE59A6 ]
+[+] Target sector  14 key type A -- found valid key [ 2B6756CE59A6 ]
+
+[+] Found 1 key candidates
+[+] target block   56 key type B -- found valid key [ E6170846F10E ]
+[+] Target sector  14 key type B -- found valid key [ E6170846F10E ]
+
+[+] Found 1 key candidates
+[+] target block   60 key type A -- found valid key [ 13A65EC42982 ]
+[+] Target sector  15 key type A -- found valid key [ 13A65EC42982 ]
+
+[+] Found 1 key candidates
+[+] target block   60 key type B -- found valid key [ 3AF7518C40DB ]
+[+] Target sector  15 key type B -- found valid key [ 3AF7518C40DB ]
+
+[+] -----+-----+--------------+---+--------------+----
+[+]  Sec | Blk | key A        |res| key B        |res
+[+] -----+-----+--------------+---+--------------+----
+[+]  000 | 003 | A0A1A2A3A4A5 | D | B27665EC956A | C 
+[+]  001 | 007 | A0A1A2A3A4A5 | D | 6D6963726F68 | C 
+[+]  002 | 011 | 2B6756CE59A6 | C | CF4854600910 | C 
+[+]  003 | 015 | 2B6756CE59A6 | C | CF4854600910 | C 
+[+]  004 | 019 | 2B6756CE59A6 | C | CF4854600910 | C 
+[+]  005 | 023 | 2B6756CE59A6 | C | CF4854600910 | C 
+[+]  006 | 027 | 2B6756CE59A6 | C | EE1F004EF906 | C 
+[+]  007 | 031 | 2B6756CE59A6 | C | EF1E014FF807 | C 
+[+]  008 | 035 | 2B6756CE59A6 | C | E0110E40F708 | C 
+[+]  009 | 039 | 2B6756CE59A6 | C | E1100F41F609 | C 
+[+]  010 | 043 | 2B6756CE59A6 | C | E2130C42F50A | C 
+[+]  011 | 047 | 2B6756CE59A6 | C | E3120D43F40B | C 
+[+]  012 | 051 | 2B6756CE59A6 | C | E4150A44F30C | C 
+[+]  013 | 055 | 2B6756CE59A6 | C | E5140B45F20D | C 
+[+]  014 | 059 | 2B6756CE59A6 | C | E6170846F10E | C 
+[+]  015 | 063 | 13A65EC42982 | C | 3AF7518C40DB | C 
+[+] -----+-----+--------------+---+--------------+----
+[=] ( D:Dictionary / S:darkSide / U:User / R:Reused / N:Nested / H:Hardnested / C:statiCnested / A:keyA  )
+[?] Hint: MAD key detected. Try `hf mf mad` for more details
+
+
+[+] Generating binary key file
+[+] Found keys have been dumped to `C:\Users\gianv\Desktop\Prox\ProxLatest\client\/hf-mf-17E6F9B7-key-001.bin`
+[=] --[ FFFFFFFFFFFF ]-- has been inserted for unknown keys where res is 0
+[=] Transferring keys to simulator memory ( ok )
+[=] Dumping card content to emulator memory (Cmd Error: 04 can occur)
+[=] downloading card content from emulator memory
+[+] Saved 1024 bytes to binary file `C:\Users\gianv\Desktop\Prox\ProxLatest\client\/hf-mf-17E6F9B7-dump-001.bin`
+[+] Saved to json file C:\Users\gianv\Desktop\Prox\ProxLatest\client\/hf-mf-17E6F9B7-dump-001.json
+[=] Autopwn execution time: 38 seconds
