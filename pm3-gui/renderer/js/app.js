@@ -33,6 +33,9 @@ const elStatusDot     = document.getElementById('status-dot');
 const elStatusLabel   = document.getElementById('status-label');
 const elStatusPort    = document.getElementById('status-port');
 const elGlobalSearch  = document.getElementById('global-search');
+const elStopCommand   = document.getElementById('btn-stop-command');
+const elTerminalStop  = document.getElementById('btn-terminal-stop');
+const elUpdateButton  = document.getElementById('btn-update');
 
 // ─── Window controls ──────────────────────────────────────────────────────
 document.getElementById('btn-minimize').addEventListener('click', () => api.minimize());
@@ -76,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
         showToast(`proxmark3.exe avviato (PID ${pid})`, 'success', 3000);
     });
 
-    api.onCmdDone(({ code }) => {
+    api.onCmdDone(({ code, stopped }) => {
         if (isRunning) {
             setRunning(false);
             
@@ -92,7 +95,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if (code === 0 || code === null) {
+            if (stopped) {
+                appendRawLine('[!] Comando interrotto dall\'utente.', 'warning');
+                terminal.appendLine('[!] Comando interrotto dall\'utente.', 'warning');
+                setOutputStatus('stopped');
+                showToast('Comando interrotto.', 'warning', 3000);
+            } else if (code === 0 || code === null) {
                 setOutputStatus('success');
                 // Parse the final output and render cards
                 renderResultCards(outputParser.cards);
@@ -155,6 +163,14 @@ function setRunning(state) {
     elOutputRunning.classList.toggle('hidden', !state);
     elOutputIndicator.className = `output-indicator ${state ? 'running' : ''}`;
     document.getElementById('btn-run').disabled = state;
+    elStopCommand.disabled = !state;
+    elStopCommand.classList.remove('stopping');
+    elStopCommand.querySelector('span').textContent = 'Interrompi';
+    elTerminalStop.disabled = !state;
+    elTerminalStop.classList.toggle('hidden', !state);
+    elTerminalStop.classList.remove('stopping');
+    elTerminalStop.querySelector('span').textContent = 'Stop';
+    elUpdateButton.disabled = state || !!window.pm3UpdaterUI?.isBusy();
 }
 
 // ─── Output rendering ─────────────────────────────────────────────────────
@@ -371,6 +387,35 @@ document.getElementById('btn-run').addEventListener('click', () => {
     executeCommand(currentCmd);
 });
 
+async function stopRunningCommand() {
+    if (!isRunning || elStopCommand.disabled) return;
+
+    elStopCommand.disabled = true;
+    elStopCommand.classList.add('stopping');
+    elStopCommand.querySelector('span').textContent = 'Arresto…';
+    elTerminalStop.disabled = true;
+    elTerminalStop.classList.add('stopping');
+    elTerminalStop.querySelector('span').textContent = 'Arresto…';
+    const result = await api.stop();
+    if (!result.success) {
+        elStopCommand.disabled = false;
+        elStopCommand.classList.remove('stopping');
+        elStopCommand.querySelector('span').textContent = 'Interrompi';
+        elTerminalStop.disabled = false;
+        elTerminalStop.classList.remove('stopping');
+        elTerminalStop.querySelector('span').textContent = 'Stop';
+        showToast(result.error || 'Impossibile interrompere il comando.', 'error');
+    }
+}
+
+elStopCommand.addEventListener('click', stopRunningCommand);
+elTerminalStop.addEventListener('click', stopRunningCommand);
+window.addEventListener('pm3-command-started', ({ detail }) => {
+    elOutputTitle.textContent = detail.cmd;
+    setRunning(true);
+    setOutputStatus('running');
+});
+
 document.getElementById('btn-copy-cmd').addEventListener('click', () => {
     if (!currentCmd) return;
     const vals = collectFormValues(currentCmd);
@@ -411,11 +456,10 @@ async function executeCommand(cmd) {
         return;
     }
 
-    // Auto-timeout after 600s (10 min)
+    // Keep the stop control available for long-running attacks.
     setTimeout(() => {
         if (isRunning) {
-            setRunning(false);
-            appendRawLine('[=] Timeout automatico (600s). Il comando potrebbe essere ancora in esecuzione.', 'warning');
+            appendRawLine('[=] Comando ancora in esecuzione dopo 10 minuti. Puoi interromperlo con il pulsante Stop.', 'warning');
         }
     }, 600000);
 }
@@ -423,6 +467,7 @@ async function executeCommand(cmd) {
 function setOutputStatus(state) {
     elOutputIndicator.className = `output-indicator ${state}`;
     if (state === 'running') { /* keep spinner visible */ }
+    else if (state === 'stopped') setTimeout(() => { elOutputIndicator.className = 'output-indicator'; }, 5000);
     else if (state === 'success') setTimeout(() => { elOutputIndicator.className = 'output-indicator'; }, 3000);
     else if (state === 'error')   setTimeout(() => { elOutputIndicator.className = 'output-indicator'; }, 5000);
 }

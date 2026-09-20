@@ -38,6 +38,13 @@
     </div>
 
     <div class="titlebar__controls">
+        <button class="titlebar-update" id="btn-update" type="button" title="Verifica e aggiorna firmware, bootloader e client PM3">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 0 1-15.2 6.5L3 16"/><path d="M3 21v-5h5"/>
+                <path d="M3 12A9 9 0 0 1 18.2 5.5L21 8"/><path d="M21 3v5h-5"/>
+            </svg>
+            <span>Aggiorna</span>
+        </button>
         <button class="titlebar__btn" id="btn-terminal" title="Terminale raw" data-tooltip="Terminale">⌨</button>
         <button class="titlebar__btn" id="btn-disconnect" title="Disconnetti">⏹</button>
         <button class="titlebar__btn" id="btn-minimize" title="Minimizza">─</button>
@@ -235,25 +242,128 @@
         <!-- Running indicator -->
         <div class="output-running hidden" id="output-running">
             <div class="spinner"></div>
-            <span class="text-sm text-muted">Comando in esecuzione…</span>
+            <span class="text-sm text-muted output-running__label">Comando in esecuzione…</span>
+            <button class="btn btn-stop btn-sm" id="btn-stop-command" type="button" title="Interrompi il comando Proxmark3 in esecuzione">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="5" y="5" width="14" height="14" rx="2"/>
+                </svg>
+                <span>Interrompi</span>
+            </button>
         </div>
 
     </div>
 
 </div>
 
+<!-- Firmware updater -->
+<div class="update-overlay hidden" id="update-overlay" role="dialog" aria-modal="true" aria-labelledby="update-title">
+    <div class="update-dialog animate-scale-in">
+        <div class="update-header">
+            <div class="update-mark" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+                </svg>
+            </div>
+            <div>
+                <div class="update-kicker">PM3 ENGINE CONTROL</div>
+                <h2 id="update-title">Aggiornamento Proxmark3</h2>
+                <p id="update-subtitle">Verifica coordinata di client, firmware e bootloader.</p>
+            </div>
+            <button class="btn btn-icon" id="btn-update-close" type="button" aria-label="Chiudi aggiornamento">✕</button>
+        </div>
+
+        <div class="update-body">
+            <div class="update-state" id="update-state">
+                <div class="update-state__icon" id="update-state-icon">↻</div>
+                <div>
+                    <strong id="update-state-title">Controllo in corso</strong>
+                    <span id="update-state-message">Lettura della versione installata…</span>
+                </div>
+            </div>
+
+            <div class="update-version-grid hidden" id="update-version-grid">
+                <div class="update-version-card">
+                    <span>Firmware dispositivo</span>
+                    <strong class="mono" id="update-device-version">—</strong>
+                </div>
+                <div class="update-version-card">
+                    <span>Client attivo</span>
+                    <strong class="mono" id="update-client-version">—</strong>
+                </div>
+                <div class="update-version-card accent">
+                    <span>Ultimo tag RRG</span>
+                    <strong class="mono" id="update-official-version">—</strong>
+                </div>
+                <div class="update-version-card cyan">
+                    <span>Build Windows disponibile</span>
+                    <strong class="mono" id="update-package-version">—</strong>
+                </div>
+            </div>
+
+            <div class="update-hardware hidden" id="update-hardware">
+                <div>
+                    <span class="update-label">Hardware rilevato</span>
+                    <strong id="update-hardware-label">—</strong>
+                </div>
+                <select id="update-variant" aria-label="Variante firmware Proxmark3">
+                    <option value="rrg_other">Generic / Easy / RDV1–3</option>
+                    <option value="rdv4">Proxmark3 RDV4</option>
+                    <option value="rdv4_bt">RDV4 + BlueShark</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" id="btn-update-variant" type="button">Usa questa variante</button>
+            </div>
+
+            <div class="update-notice hidden" id="update-notice"></div>
+
+            <div class="update-progress hidden" id="update-progress">
+                <div class="update-progress__row">
+                    <span id="update-progress-label">Preparazione…</span>
+                    <span class="mono" id="update-progress-value">0%</span>
+                </div>
+                <div class="update-progress__track"><div id="update-progress-bar"></div></div>
+                <div class="update-log mono" id="update-log" aria-live="polite"></div>
+            </div>
+
+            <label class="update-consent hidden" id="update-consent-wrap">
+                <input type="checkbox" id="update-consent"/>
+                <span>Confermo che è l’unico Proxmark3 collegato, che resterà alimentato via USB e che non chiuderò l’app durante il flash.</span>
+            </label>
+        </div>
+
+        <div class="update-footer">
+            <span class="update-source">RRG ufficiale · pacchetto Windows Proxmarkbuilds</span>
+            <button class="btn btn-secondary" id="btn-update-retry" type="button">Ricontrolla</button>
+            <button class="btn btn-primary" id="btn-update-install" type="button" disabled>Aggiorna ora</button>
+        </div>
+    </div>
+</div>
+
 <!-- ═══════════════════════════════════════
      TERMINAL OVERLAY
 ═══════════════════════════════════════ -->
 <div class="terminal-overlay hidden" id="terminal-overlay" role="dialog" aria-label="Terminale raw">
-    <div class="terminal-window animate-scale-in">
+    <div class="terminal-window animate-scale-in" id="terminal-window">
+        <div class="terminal-resize-handle terminal-resize-handle--n" data-resize="n" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--e" data-resize="e" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--s" data-resize="s" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--w" data-resize="w" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--ne" data-resize="ne" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--se" data-resize="se" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--sw" data-resize="sw" aria-hidden="true"></div>
+        <div class="terminal-resize-handle terminal-resize-handle--nw" data-resize="nw" aria-hidden="true"></div>
         <div class="terminal-header">
             <div class="flex items-center gap-2">
                 <div class="terminal-dot red"></div>
                 <div class="terminal-dot yellow"></div>
                 <div class="terminal-dot green"></div>
             </div>
-            <span class="text-sm text-muted">proxmark3 — Terminale raw</span>
+            <span class="text-sm text-muted terminal-header__title">proxmark3 — Terminale raw <small>· trascina i bordi per ridimensionare</small></span>
+            <button class="btn btn-stop btn-sm hidden" id="btn-terminal-stop" type="button" title="Interrompi il comando in esecuzione">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="5" y="5" width="14" height="14" rx="2"/>
+                </svg>
+                <span>Stop</span>
+            </button>
             <button class="btn btn-icon btn-sm" id="btn-close-terminal">✕</button>
         </div>
         <div class="terminal-body" id="terminal-body" aria-live="polite"></div>
@@ -270,6 +380,7 @@
 <script src="js/parser.js" defer></script>
 <script src="js/ui.js" defer></script>
 <script src="js/terminal.js" defer></script>
+<script src="js/updater-ui.js" defer></script>
 <script src="js/app.js" defer></script>
 </body>
 </html>

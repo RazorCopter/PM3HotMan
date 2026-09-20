@@ -22,7 +22,20 @@ npm start
 - Form parametri user-friendly per ogni comando
 - Output pm3 interpretato in card strutturate
 - Terminale raw integrato con history e syntax coloring
+- Arresto immediato dei comandi lunghi e dei relativi processi figli
+- Aggiornamento coordinato di client, bootloader e full image dal pulsante `Aggiorna`
+- Rilevamento automatico delle varianti Generic/Easy, RDV4 e RDV4 + BlueShark
+- Verifica del commit RRG, SHA-256, struttura archivio e versione incorporata prima del flash
+- Installazione versionata del nuovo client con attivazione solo dopo la verifica hardware finale
 - Ricerca globale comandi (Ctrl+K)
+
+## Aggiornamento Proxmark3
+
+Il controllo usa i tag del repository RRG ufficiale e i pacchetti Windows di Proxmarkbuilds. Se il pacchetto Windows è ancora precedente all'ultimo tag, la GUI lo dichiara esplicitamente e installa soltanto una build dimostrata più recente del firmware collegato.
+
+Il flash richiama gli script ufficiali `pm3-flash-all`; se viene rilevato un bootloader datato, esegue in sequenza `pm3-flash-bootrom` e `pm3-flash-fullimage`. Durante la scrittura il comando Stop e la chiusura dell'app sono protetti per evitare interruzioni accidentali.
+
+I client scaricati sono conservati in `%LOCALAPPDATA%\PM3HotMan\engines`. La cartella incorporata nell'installer rimane intatta come fallback.
 
 ## Struttura
 

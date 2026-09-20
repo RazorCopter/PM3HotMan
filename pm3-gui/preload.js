@@ -19,9 +19,12 @@ contextBridge.exposeInMainWorld('pm3api', {
     connect:      (pm3Path, comPort) => ipcRenderer.invoke('pm3:connect', { pm3Path, comPort }),
     disconnect:   () => ipcRenderer.invoke('pm3:disconnect'),
     send:         (cmd) => ipcRenderer.invoke('pm3:send', { cmd }),
+    stop:         () => ipcRenderer.invoke('pm3:stop'),
     resize:       (cols, rows) => ipcRenderer.invoke('pm3:resize', { cols, rows }),
     defaultPath:  () => ipcRenderer.invoke('pm3:defaultPath'),
     getStatus:    () => ipcRenderer.invoke('pm3:status'),
+    checkUpdate:  (variant) => ipcRenderer.invoke('pm3:update-check', { variant }),
+    startUpdate:  (token) => ipcRenderer.invoke('pm3:update-start', { token }),
 
     // ── Event listeners ───────────────────────────────────────
     onOutput: (callback) => {
@@ -43,6 +46,16 @@ contextBridge.exposeInMainWorld('pm3api', {
         const handler = (_, info) => callback(info);
         ipcRenderer.on('pm3:cmd-done', handler);
         return () => ipcRenderer.removeListener('pm3:cmd-done', handler);
+    },
+    onUpdateProgress: (callback) => {
+        const handler = (_, info) => callback(info);
+        ipcRenderer.on('pm3:update-progress', handler);
+        return () => ipcRenderer.removeListener('pm3:update-progress', handler);
+    },
+    onUpdateOutput: (callback) => {
+        const handler = (_, data) => callback(data);
+        ipcRenderer.on('pm3:update-output', handler);
+        return () => ipcRenderer.removeListener('pm3:update-output', handler);
     },
 
     // ── Dialogs ──────────────────────────────────────────────
