@@ -143,10 +143,13 @@ function killPm3() {
 function buildPm3Env(pm3Dir) {
     const libsDir  = path.join(pm3Dir, 'libs');
     const shellDir = path.join(libsDir, 'shell');
+    // Usa la cartella userData dell'app Electron come HOME in modo che Proxmark3
+    // possa scrivere i file di log e configurazione senza errori di permessi.
+    const userHome = app.getPath('userData');
     return {
         ...process.env,
         PATH: [pm3Dir, shellDir, libsDir, process.env.PATH || ''].join(path.delimiter),
-        HOME: pm3Dir.replace(/\\/g, '/'),
+        HOME: userHome.replace(/\\/g, '/'),
         QT_PLUGIN_PATH: libsDir + path.sep,
         QT_QPA_PLATFORM_PLUGIN_PATH: libsDir + path.sep,
         MSYSTEM: 'MINGW64',
@@ -176,21 +179,36 @@ async function spawnPm3(pm3Path, comPort) {
     pm3SessionDir  = pm3Dir;
 
     // Dynamically update preferences.json to prevent dump saving issues if folder was moved
-    const prefFile = path.join(pm3Dir, '.proxmark3', 'preferences.json');
+    // Ora salva i dump nella cartella documenti dell'utente
+    const userHome = app.getPath('userData');
+    const proxmarkUserDir = path.join(userHome, '.proxmark3');
+    if (!fs.existsSync(proxmarkUserDir)) {
+        fs.mkdirSync(proxmarkUserDir, { recursive: true });
+    }
+    const prefFile = path.join(proxmarkUserDir, 'preferences.json');
+    const defaultPrefFile = path.join(pm3Dir, '.proxmark3', 'preferences.json');
+    
+    // Copia i pref di default se non esistono
+    if (!fs.existsSync(prefFile) && fs.existsSync(defaultPrefFile)) {
+        try { fs.copyFileSync(defaultPrefFile, prefFile); } catch (e) { console.error('Errore copia preferences.json', e); }
+    }
+
     if (fs.existsSync(prefFile)) {
         try {
             const prefs = JSON.parse(fs.readFileSync(prefFile, 'utf8'));
-            const newPath = pm3Dir + path.sep; // Use standard path sep
+            const docsPath = path.join(app.getPath('documents'), 'PM3_Dumps') + path.sep; 
+            if (!fs.existsSync(docsPath)) fs.mkdirSync(docsPath, { recursive: true });
+
             let changed = false;
             ['file.default.savepath', 'file.default.dumppath', 'file.default.tracepath'].forEach(key => {
-                if (prefs[key] && prefs[key] !== newPath) {
-                    prefs[key] = newPath;
+                if (prefs[key] !== docsPath) {
+                    prefs[key] = docsPath;
                     changed = true;
                 }
             });
             if (changed) {
                 fs.writeFileSync(prefFile, JSON.stringify(prefs, null, 2), 'utf8');
-                console.log('Aggiornati i percorsi in preferences.json per adattarsi alla directory corrente.');
+                console.log('Aggiornati i percorsi in preferences.json per usare la cartella Documenti.');
             }
         } catch (e) {
             console.error('Errore durante l\'aggiornamento di preferences.json:', e);
@@ -204,12 +222,13 @@ async function spawnPm3(pm3Path, comPort) {
         let timedOut = false;
 
         // Run: proxmark3.exe -p COM3 -c 'hw version' --flush
+        const docsPath = path.join(app.getPath('documents'), 'PM3_Dumps');
         const test = spawn(pm3Path, ['-p', comPort, '-c', 'hw version', '--flush'], {
-            cwd: pm3Dir,
+            cwd: docsPath,
             env,
             stdio: ['ignore', 'pipe', 'pipe'],
         });
-
+        
         test.stdout.on('data', d => {
             output += d.toString();
             const text = d.toString();
@@ -247,8 +266,9 @@ function sendToPm3(cmd) {
     if (!pm3SessionPath || !pm3SessionPort) return false;
 
     const { spawn } = require('child_process');
+    const docsPath = require('path').join(require('electron').app.getPath('documents'), 'PM3_Dumps');
     const proc = spawn(pm3SessionPath, ['-p', pm3SessionPort, '-c', cmd, '--flush'], {
-        cwd: pm3SessionDir,
+        cwd: docsPath,
         env: pm3SessionEnv,
         stdio: ['ignore', 'pipe', 'pipe'],
     });
