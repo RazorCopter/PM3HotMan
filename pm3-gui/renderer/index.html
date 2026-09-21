@@ -20,9 +20,13 @@
         <span class="titlebar__name">PM3 <span>HotMan</span></span>
     </div>
     <div class="titlebar__spacer"></div>
+    <div class="lang-switch" id="lang-switch" role="group" aria-label="Lingua / Language">
+        <button type="button" class="lang-btn active" data-lang="it" title="Italiano">ITA</button>
+        <button type="button" class="lang-btn" data-lang="en" title="English">ENG</button>
+    </div>
     <div class="titlebar__controls">
-        <button class="titlebar__btn" id="btn-minimize" title="Riduci a icona">─</button>
-        <button class="titlebar__btn close" id="btn-close" title="Chiudi">✕</button>
+        <button class="titlebar__btn" id="btn-minimize" title="Riduci a icona" data-i18n-title="titlebar.minimize_tooltip">─</button>
+        <button class="titlebar__btn close" id="btn-close" title="Chiudi" data-i18n-title="titlebar.close_tooltip">✕</button>
     </div>
 </div>
 
@@ -55,7 +59,7 @@
             </div>
             <div>
                 <h1 class="connect-title">PM3 <span class="text-accent">HotMan</span></h1>
-                <p class="connect-subtitle">Proxmark3 GUI — Iceman Fork</p>
+                <p class="connect-subtitle" data-i18n="connect.subtitle">Proxmark3 GUI — Iceman Fork</p>
             </div>
         </div>
 
@@ -68,13 +72,13 @@
             <div class="input-group">
                 <label class="input-label" for="pm3-path">
                     <span class="label-icon">⚙</span>
-                    Percorso proxmark3.exe
+                    <span data-i18n="connect.pm3_path">Percorso proxmark3.exe</span>
                 </label>
                 <div class="path-input-wrap">
                     <input type="text" id="pm3-path" name="pm3-path"
                            placeholder="C:\...\ProxLatest\client\proxmark3.exe"
                            spellcheck="false"/>
-                    <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-browse" data-i18n="connect.browse">
                         Sfoglia…
                     </button>
                 </div>
@@ -85,12 +89,12 @@
             <div class="input-group">
                 <label class="input-label" for="com-port">
                     <span class="label-icon">🔌</span>
-                    Porta COM
-                    <button type="button" class="btn-scan" id="btn-scan-ports" title="Aggiorna lista porte">
+                    <span data-i18n="connect.com_port">Porta COM</span>
+                    <button type="button" class="btn-scan" id="btn-scan-ports" title="Aggiorna lista porte" data-i18n-title="connect.scan">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                             <path d="M21 2v6h-6M3 12A9 9 0 0 1 15 3.27M3 22v-6h6M21 12A9 9 0 0 1 9 20.73"/>
                         </svg>
-                        Aggiorna
+                        <span data-i18n="connect.scan">Aggiorna</span>
                     </button>
                 </label>
                 <div class="port-select-wrap">
@@ -108,7 +112,7 @@
                     <path d="M18.364 5.636 16.95 7.05A7 7 0 1 0 19 12h-2"/>
                     <path d="m22 2-7 7"/>
                 </svg>
-                Connetti al Proxmark3
+                <span data-i18n="connect.connect_btn">Connetti al Proxmark3</span>
             </button>
 
             <!-- Status -->
@@ -143,6 +147,7 @@
     </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script src="js/connect.js" defer></script>
 </body>
 </html>

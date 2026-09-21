@@ -5,20 +5,23 @@
  * Renders a command card element
  */
 function renderCmdCard(cmd, onClick) {
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(cmd) : cmd;
     const card = document.createElement('div');
-    card.className = `cmd-card${cmd.featured ? ' featured' : ''}${cmd.dangerous ? ' dangerous' : ''}`;
+    card.className = `cmd-card${locCmd.featured ? ' featured' : ''}${locCmd.dangerous ? ' dangerous' : ''}`;
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', cmd.name);
-    card.id = `cmd-card-${cmd.id}`;
+    card.setAttribute('aria-label', locCmd.name);
+    card.id = `cmd-card-${locCmd.id}`;
+
+    const warnBadge = typeof i18n !== 'undefined' ? i18n.t('detail.card_warning') : '⚠ Attenzione';
 
     card.innerHTML = `
-        <div class="cmd-card__icon">${cmd.icon || '⚙'}</div>
-        <div class="cmd-card__name">${cmd.name}</div>
-        <div class="cmd-card__desc">${cmd.description.length > 80 ? cmd.description.slice(0, 80) + '…' : cmd.description}</div>
+        <div class="cmd-card__icon">${locCmd.icon || '⚙'}</div>
+        <div class="cmd-card__name">${locCmd.name}</div>
+        <div class="cmd-card__desc">${locCmd.description.length > 80 ? locCmd.description.slice(0, 80) + '…' : locCmd.description}</div>
         <div class="cmd-card__footer">
-            <code class="cmd-card__cmd">${cmd.pm3cmd.replace(/ \{[^}]+\}/g, ' …')}</code>
-            ${cmd.dangerous ? '<span class="badge badge-error">⚠ Attenzione</span>' : ''}
+            <code class="cmd-card__cmd">${locCmd.pm3cmd.replace(/ \{[^}]+\}/g, ' …')}</code>
+            ${locCmd.dangerous ? `<span class="badge badge-error">${warnBadge}</span>` : ''}
         </div>
     `;
 
@@ -67,14 +70,19 @@ function renderResultCard(cardData) {
 
     // Blocks table
     if (cardData.type === 'table' && cardData.rows) {
+        const thBlk = typeof i18n !== 'undefined' ? i18n.t('parser.table_blk') : 'Blk';
+        const thData = typeof i18n !== 'undefined' ? i18n.t('parser.table_data') : 'Dati (hex)';
         inner += `<table class="blocks-table">
-            <thead><tr><th>Blk</th><th>Dati (hex)</th></tr></thead>
+            <thead><tr><th>${thBlk}</th><th>${thData}</th></tr></thead>
             <tbody>`;
         for (const r of cardData.rows.slice(0, 20)) {
             inner += `<tr><td class="blk-num">${r.blk}</td><td class="blk-data">${escapeHtml(r.data)}</td></tr>`;
         }
         if (cardData.rows.length > 20) {
-            inner += `<tr><td colspan="2" style="color:var(--text-muted);font-size:0.7rem">… e altri ${cardData.rows.length - 20} blocchi</td></tr>`;
+            const moreText = typeof i18n !== 'undefined'
+                ? i18n.t('parser.table_more', { count: cardData.rows.length - 20 })
+                : `… e altri ${cardData.rows.length - 20} blocchi`;
+            inner += `<tr><td colspan="2" style="color:var(--text-muted);font-size:0.7rem">${moreText}</td></tr>`;
         }
         inner += '</tbody></table>';
     }
@@ -87,7 +95,10 @@ function renderResultCard(cardData) {
         btnDiv.style.marginTop = 'var(--sp-3)';
         const btn = document.createElement('button');
         btn.className = 'btn btn-secondary btn-sm';
-        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ${escapeHtml(cardData.action.label)}`;
+        const actionLabel = (cardData.action.label === 'Apri Cartella' && typeof i18n !== 'undefined')
+            ? i18n.t('parser.open_folder')
+            : cardData.action.label;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ${escapeHtml(actionLabel)}`;
         btn.addEventListener('click', () => {
             if (window.pm3api && window.pm3api.showItemInFolder) {
                 window.pm3api.showItemInFolder(cardData.action.data);
@@ -105,18 +116,23 @@ function renderResultCard(cardData) {
  */
 function renderParamForm(cmd, container) {
     container.innerHTML = '';
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(cmd) : cmd;
 
-    if (!cmd.params || cmd.params.length === 0) {
+    if (!locCmd.params || locCmd.params.length === 0) {
+        const noParams = typeof i18n !== 'undefined' ? i18n.t('detail.no_params') : 'Questo comando non richiede parametri.';
+        const pressRun = typeof i18n !== 'undefined' ? i18n.t('detail.press_run') : 'Premi Esegui per lanciarlo.';
         container.innerHTML = `
             <div class="no-params-msg">
                 <div style="font-size:2rem;margin-bottom:8px">✅</div>
-                <div>Questo comando non richiede parametri.</div>
-                <div class="text-xs text-muted mt-2">Premi <strong>Esegui</strong> per lanciarlo.</div>
+                <div>${noParams}</div>
+                <div class="text-xs text-muted mt-2">${pressRun}</div>
             </div>`;
         return;
     }
 
-    for (const p of cmd.params) {
+    const browseLabel = typeof i18n !== 'undefined' ? i18n.t('detail.browse') : 'Sfoglia…';
+
+    for (const p of locCmd.params) {
         const group = document.createElement('div');
         group.className = 'input-group';
 
@@ -150,7 +166,7 @@ function renderParamForm(cmd, container) {
             const browseBtn = document.createElement('button');
             browseBtn.type = 'button';
             browseBtn.className = 'btn btn-secondary btn-sm';
-            browseBtn.textContent = 'Sfoglia…';
+            browseBtn.textContent = browseLabel;
             browseBtn.addEventListener('click', async () => {
                 const path = await window.pm3api.openFile(p.filters || []);
                 if (path) inputEl.value = path;
@@ -209,14 +225,19 @@ function collectFormValues(cmd) {
  * Validate form values; returns null if ok, or error string
  */
 function validateFormValues(cmd, values) {
-    for (const p of cmd.params || []) {
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(cmd) : cmd;
+    for (const p of locCmd.params || []) {
         if (p.required === false) continue;
         const v = values[p.id];
         if (!v && p.type !== 'select') {
-            return `Il campo "${p.label}" è obbligatorio.`;
+            return typeof i18n !== 'undefined'
+                ? i18n.t('detail.param_required', { label: p.label })
+                : `Il campo "${p.label}" è obbligatorio.`;
         }
         if (p.maxlength && v && v.replace(/\s/g, '').length > p.maxlength) {
-            return `Il campo "${p.label}" deve avere al massimo ${p.maxlength} caratteri.`;
+            return typeof i18n !== 'undefined'
+                ? i18n.t('detail.param_maxlength', { label: p.label, max: p.maxlength })
+                : `Il campo "${p.label}" deve avere al massimo ${p.maxlength} caratteri.`;
         }
     }
     return null;

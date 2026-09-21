@@ -219,17 +219,29 @@ function buildCards(f, lines) {
 
     // Error cards first
     if (f.no_tag) {
-        cards.push({ type: 'error', title: 'Nessun tag rilevato', icon: '❌',
-            text: 'Avvicina il tag all\'antenna del Proxmark3 e riprova.' });
+        cards.push({
+            type: 'error',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.no_tag_title') : 'Nessun tag rilevato',
+            icon: '❌',
+            text: typeof i18n !== 'undefined' ? i18n.t('parser.no_tag_text') : 'Avvicina il tag all\'antenna del Proxmark3 e riprova.'
+        });
         return cards;
     }
     if (f.auth_failed) {
-        cards.push({ type: 'warning', title: 'Autenticazione fallita', icon: '🔐',
-            text: 'La chiave specificata non è corretta per questo settore.' });
+        cards.push({
+            type: 'warning',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.auth_failed_title') : 'Autenticazione fallita',
+            icon: '🔐',
+            text: typeof i18n !== 'undefined' ? i18n.t('parser.auth_failed_text') : 'La chiave specificata non è corretta per questo settore.'
+        });
     }
     if (f.timeout) {
-        cards.push({ type: 'error', title: 'Timeout', icon: '⏱',
-            text: 'Il dispositivo non ha risposto in tempo.' });
+        cards.push({
+            type: 'error',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.timeout_title') : 'Timeout',
+            icon: '⏱',
+            text: typeof i18n !== 'undefined' ? i18n.t('parser.timeout_text') : 'Il dispositivo non ha risposto in tempo.'
+        });
         return cards;
     }
 
@@ -238,14 +250,23 @@ function buildCards(f, lines) {
         const fields = [{ label: 'UID', value: f.uid, mono: true }];
         if (f.atqa) fields.push({ label: 'ATQA', value: f.atqa, mono: true });
         if (f.sak)  fields.push({ label: 'SAK',  value: f.sak,  mono: true });
-        if (f.type) fields.push({ label: 'Tipo',  value: f.type });
-        cards.push({ type: 'tag', icon: '🏷', title: 'Tag rilevato', fields });
+        if (f.type) fields.push({ label: typeof i18n !== 'undefined' ? i18n.t('parser.field_type') : 'Tipo', value: f.type });
+        cards.push({
+            type: 'tag',
+            icon: '🏷',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.tag_detected') : 'Tag rilevato',
+            fields
+        });
     }
 
     // EM410x card
     if (f.em410x_id) {
-        cards.push({ type: 'tag', icon: '📻', title: 'Tag EM410x',
-            fields: [{ label: 'ID', value: f.em410x_id, mono: true }] });
+        cards.push({
+            type: 'tag',
+            icon: '📻',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.em410x_title') : 'Tag EM410x',
+            fields: [{ label: 'ID', value: f.em410x_id, mono: true }]
+        });
     }
 
     // HID card
@@ -254,23 +275,43 @@ function buildCards(f, lines) {
         if (f.hid_facility) fields.push({ label: 'Facility Code', value: f.hid_facility });
         if (f.hid_card)     fields.push({ label: 'Card Number',   value: f.hid_card });
         if (f.hid_raw)      fields.push({ label: 'Raw',           value: f.hid_raw, mono: true });
-        cards.push({ type: 'tag', icon: '🏷', title: 'Card HID Proximity', fields });
+        cards.push({
+            type: 'tag',
+            icon: '🏷',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.hid_title') : 'Card HID Proximity',
+            fields
+        });
     }
 
     // iClass CSN
     if (f.csn) {
-        cards.push({ type: 'tag', icon: '🏢', title: 'iClass CSN',
-            fields: [{ label: 'CSN', value: f.csn, mono: true }] });
+        cards.push({
+            type: 'tag',
+            icon: '🏢',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.iclass_title') : 'iClass CSN',
+            fields: [{ label: 'CSN', value: f.csn, mono: true }]
+        });
     }
 
     // Keys found
     if (f.keys_found && f.keys_found.size > 0) {
-        const fields = [...f.keys_found].map((k, i) => ({ label: `Chiave ${i+1}`, value: k, mono: true }));
-        cards.push({ type: 'success', icon: '🔑', title: `${f.keys_found.size} chiave/i trovata/e`, fields });
+        const keyPrefix = typeof i18n !== 'undefined' ? i18n.t('parser.field_key_prefix') : 'Chiave';
+        const fields = [...f.keys_found].map((k, i) => ({ label: `${keyPrefix} ${i+1}`, value: k, mono: true }));
+        cards.push({
+            type: 'success',
+            icon: '🔑',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.keys_found_title', { count: f.keys_found.size }) : `${f.keys_found.size} chiave/i trovata/e`,
+            fields
+        });
     }
     if (f.keys) {
         const fields = Object.entries(f.keys).map(([t, v]) => ({ label: `Key ${t}`, value: v, mono: true }));
-        if (fields.length) cards.push({ type: 'success', icon: '🔑', title: 'Chiavi estratte', fields });
+        if (fields.length) cards.push({
+            type: 'success',
+            icon: '🔑',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.keys_extracted_title') : 'Chiavi estratte',
+            fields
+        });
     }
 
     // Blocks table
@@ -278,7 +319,12 @@ function buildCards(f, lines) {
         const rows = Object.entries(f.blocks)
             .sort(([a], [b]) => a - b)
             .map(([blk, data]) => ({ blk: parseInt(blk), data }));
-        cards.push({ type: 'table', icon: '📋', title: 'Blocchi letti', rows });
+        cards.push({
+            type: 'table',
+            icon: '📋',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.blocks_title') : 'Blocchi letti',
+            rows
+        });
     }
 
     // Antenna tune
@@ -286,36 +332,52 @@ function buildCards(f, lines) {
         const fields = [];
         if (f.lf_voltage) fields.push({ label: 'LF Antenna', value: f.lf_voltage });
         if (f.hf_voltage) fields.push({ label: 'HF Antenna', value: f.hf_voltage });
-        cards.push({ type: 'info', icon: '📡', title: 'Test Antenna', fields });
+        cards.push({
+            type: 'info',
+            icon: '📡',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.antenna_title') : 'Test Antenna',
+            fields
+        });
     }
 
     // Firmware
     if (f.firmware) {
-        cards.push({ type: 'info', icon: '📦', title: 'Firmware',
-            fields: [{ label: 'Versione', value: f.firmware }] });
+        cards.push({
+            type: 'info',
+            icon: '📦',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.firmware_title') : 'Firmware',
+            fields: [{ label: typeof i18n !== 'undefined' ? i18n.t('parser.field_version') : 'Versione', value: f.firmware }]
+        });
     }
 
     // Autopwn success
     if (f.autopwn_ok) {
-        cards.push({ type: 'success', icon: '🔓', title: 'Autopwn completato con successo!',
-            text: 'Tutte le chiavi sono state recuperate. Controlla il file di dump generato.' });
+        cards.push({
+            type: 'success',
+            icon: '🔓',
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.autopwn_title') : 'Autopwn completato con successo!',
+            text: typeof i18n !== 'undefined' ? i18n.t('parser.autopwn_text') : 'Tutte le chiavi sono state recuperate. Controlla il file di dump generato.'
+        });
     }
 
     // Dump files
     if (f.dump_bin || f.dump_json || f.dump_keys) {
         const fields = [];
-        if (f.dump_keys) fields.push({ label: 'Chiavi', value: f.dump_keys, mono: true });
-        if (f.dump_bin) fields.push({ label: 'Dump Bin', value: f.dump_bin, mono: true });
-        if (f.dump_json) fields.push({ label: 'Dump JSON', value: f.dump_json, mono: true });
+        const keysLabel = typeof i18n !== 'undefined' ? i18n.t('parser.field_keys') : 'Chiavi';
+        const dumpBinLabel = typeof i18n !== 'undefined' ? i18n.t('parser.field_dump_bin') : 'Dump Bin';
+        const dumpJsonLabel = typeof i18n !== 'undefined' ? i18n.t('parser.field_dump_json') : 'Dump JSON';
+        if (f.dump_keys) fields.push({ label: keysLabel, value: f.dump_keys, mono: true });
+        if (f.dump_bin) fields.push({ label: dumpBinLabel, value: f.dump_bin, mono: true });
+        if (f.dump_json) fields.push({ label: dumpJsonLabel, value: f.dump_json, mono: true });
         
         // Find the first valid path to use for "Open Folder" action
         const anyPath = f.dump_keys || f.dump_bin || f.dump_json;
         cards.push({ 
             type: 'info', 
             icon: '📁', 
-            title: 'File Salvati', 
+            title: typeof i18n !== 'undefined' ? i18n.t('parser.saved_files_title') : 'File Salvati', 
             fields,
-            action: { label: 'Apri Cartella', data: anyPath }
+            action: { label: typeof i18n !== 'undefined' ? i18n.t('parser.open_folder') : 'Apri Cartella', data: anyPath }
         });
     }
 

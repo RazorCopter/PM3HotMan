@@ -33,6 +33,7 @@
 - **⚡ Quick Actions**: Built-in shortcuts for common tasks like `auto`, `hf mf info`, `lf search`, and comprehensive cracking workflows.
 - **⏹ Safe Command Stop**: Interrupt long-running brute-force or cracking commands directly from the output panel or raw terminal.
 - **🔄 Firmware & Client Updater**: Checks the connected device against the latest RRG release, selects the correct Generic/RDV4 build, validates the Windows package, flashes bootloader and full image, then atomically activates the matching client.
+- **🌐 Bilingual Interface (ITA / ENG)**: Seamless instant switching between Italian and English with localized command cards, parameters, descriptions, and system logs.
 - **🖥 Interactive Terminal**: A global raw terminal log is always available on the side if you want to see exactly what's happening under the hood.
 
 ---

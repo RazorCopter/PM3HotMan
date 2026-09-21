@@ -42,16 +42,18 @@ document.getElementById('btn-minimize').addEventListener('click', () => api.mini
 document.getElementById('btn-maximize').addEventListener('click', () => api.maximize());
 document.getElementById('btn-close').addEventListener('click', () => api.close());
 let isDisconnected = false;
+let currentConnState = 'connecting';
 document.getElementById('btn-disconnect').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-disconnect');
     if (!isDisconnected) {
-        if (confirm('Disconnettersi dal Proxmark3?')) {
+        const confirmMsg = typeof i18n !== 'undefined' ? i18n.t('titlebar.disconnect_confirm') : 'Disconnettersi dal Proxmark3?';
+        if (confirm(confirmMsg)) {
             await api.disconnect();
-            setConnectionStatus('disconnected', 'Disconnesso');
+            setConnectionStatus('disconnected', typeof i18n !== 'undefined' ? i18n.t('titlebar.disconnected') : 'Disconnesso');
             isDisconnected = true;
             
             // Cambia l'aspetto e la funzione in "Riconnetti"
-            const btn = document.getElementById('btn-disconnect');
-            btn.title = 'Riconnetti';
+            btn.title = typeof i18n !== 'undefined' ? i18n.t('titlebar.reconnect') : 'Riconnetti';
             btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.26l5.42 5.42"/></svg>';
         }
     } else {
@@ -62,20 +64,39 @@ document.getElementById('btn-disconnect').addEventListener('click', async () => 
 
 // ─── Connection status ────────────────────────────────────────────────────
 function setConnectionStatus(state, label, port) {
+    currentConnState = state;
     elStatusDot.className = `status-dot ${state}`;
     elStatusLabel.textContent = label;
     if (port) elStatusPort.textContent = port;
 }
 
+function refreshConnectionStatusText() {
+    if (currentConnState === 'connecting') {
+        elStatusLabel.textContent = typeof i18n !== 'undefined' ? i18n.t('titlebar.waiting_pm3') : 'In attesa pm3…';
+    } else if (currentConnState === 'connected') {
+        elStatusLabel.textContent = typeof i18n !== 'undefined' ? i18n.t('titlebar.connected') : 'Connesso';
+    } else if (currentConnState === 'disconnected') {
+        elStatusLabel.textContent = typeof i18n !== 'undefined' ? i18n.t('titlebar.disconnected') : 'Disconnesso';
+    }
+    const btn = document.getElementById('btn-disconnect');
+    if (btn) {
+        btn.title = isDisconnected
+            ? (typeof i18n !== 'undefined' ? i18n.t('titlebar.reconnect') : 'Riconnetti')
+            : (typeof i18n !== 'undefined' ? i18n.t('titlebar.disconnect') : 'Disconnetti');
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const port = sessionStorage.getItem('comPort') || '';
     if (port) elStatusPort.textContent = port;
-    setConnectionStatus('connecting', 'In attesa pm3…', port);
+    const waitLabel = typeof i18n !== 'undefined' ? i18n.t('titlebar.waiting_pm3') : 'In attesa pm3…';
+    setConnectionStatus('connecting', waitLabel, port);
 
     // Listen for the "ready" signal from main process (proxmark3 already running)
     api.onReady(({ pid, port: p }) => {
         const displayPort = p || port || elStatusPort.textContent;
-        setConnectionStatus('connected', 'Connesso', displayPort);
+        const connLabel = typeof i18n !== 'undefined' ? i18n.t('titlebar.connected') : 'Connesso';
+        setConnectionStatus('connected', connLabel, displayPort);
         showToast(`proxmark3.exe avviato (PID ${pid})`, 'success', 3000);
     });
 
@@ -96,10 +117,12 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (stopped) {
-                appendRawLine('[!] Comando interrotto dall\'utente.', 'warning');
-                terminal.appendLine('[!] Comando interrotto dall\'utente.', 'warning');
+                const stopMsg = typeof i18n !== 'undefined' ? i18n.t('output.stopped_msg') : "[!] Comando interrotto dall'utente.";
+                appendRawLine(stopMsg, 'warning');
+                terminal.appendLine(stopMsg, 'warning');
                 setOutputStatus('stopped');
-                showToast('Comando interrotto.', 'warning', 3000);
+                const stopToast = typeof i18n !== 'undefined' ? i18n.t('output.stopped_toast') : 'Comando interrotto.';
+                showToast(stopToast, 'warning', 3000);
             } else if (code === 0 || code === null) {
                 setOutputStatus('success');
                 // Parse the final output and render cards
@@ -127,9 +150,10 @@ window.addEventListener('DOMContentLoaded', () => {
 // ─── PM3 output handler ───────────────────────────────────────────────────
 const removeOutputListener = api.onOutput(handleOutput);
 const removeDisconnectListener = api.onDisconnected(({ exitCode }) => {
-    setConnectionStatus('disconnected', `Disconnesso (exit ${exitCode})`);
+    const discLabel = typeof i18n !== 'undefined' ? i18n.t('titlebar.disconnected') : 'Disconnesso';
+    setConnectionStatus('disconnected', `${discLabel} (exit ${exitCode})`);
     setRunning(false);
-    showToast('Il processo pm3 si è chiuso.', 'warning');
+    showToast(typeof i18n !== 'undefined' ? i18n.t('output.process_closed') : 'Il processo pm3 si è chiuso.', 'warning');
 });
 
 function handleOutput(chunk) {
@@ -165,11 +189,11 @@ function setRunning(state) {
     document.getElementById('btn-run').disabled = state;
     elStopCommand.disabled = !state;
     elStopCommand.classList.remove('stopping');
-    elStopCommand.querySelector('span').textContent = 'Interrompi';
+    elStopCommand.querySelector('span').textContent = typeof i18n !== 'undefined' ? i18n.t('output.stop') : 'Interrompi';
     elTerminalStop.disabled = !state;
     elTerminalStop.classList.toggle('hidden', !state);
     elTerminalStop.classList.remove('stopping');
-    elTerminalStop.querySelector('span').textContent = 'Stop';
+    elTerminalStop.querySelector('span').textContent = typeof i18n !== 'undefined' ? i18n.t('terminal.stop') : 'Stop';
     elUpdateButton.disabled = state || !!window.pm3UpdaterUI?.isBusy();
 }
 
@@ -257,8 +281,10 @@ document.querySelectorAll('.sidebar-item').forEach(el => {
 
 // ─── Home view ────────────────────────────────────────────────────────────
 function renderHome() {
-    document.getElementById('view-title').textContent = 'Dashboard';
-    document.getElementById('view-desc').textContent = 'Seleziona un\'operazione o esplora le categorie nella sidebar.';
+    const homeTitle = typeof i18n !== 'undefined' ? i18n.t('home.title') : 'Dashboard';
+    const homeDesc = typeof i18n !== 'undefined' ? i18n.t('home.desc') : "Seleziona un'operazione o esplora le categorie nella sidebar.";
+    document.getElementById('view-title').textContent = homeTitle;
+    document.getElementById('view-desc').textContent = homeDesc;
 
     elCommandsGrid.innerHTML = '';
 
@@ -267,16 +293,21 @@ function renderHome() {
     hero.className = 'home-hero';
     hero.style.gridColumn = '1 / -1';
     const port = sessionStorage.getItem('comPort') || '?';
+    const heroTitle = typeof i18n !== 'undefined' ? i18n.t('home.hero_title') : 'Proxmark3 connesso';
+    const heroDesc = typeof i18n !== 'undefined' ? i18n.t('home.hero_desc') : "Scegli un'operazione dalla lista o dalla sidebar. I comandi \"rapidi\" in verde permettono la rilevazione automatica dei tag.";
+    const activePort = typeof i18n !== 'undefined' ? i18n.t('home.active_port') : 'Porta attiva';
+    const onlineBadge = typeof i18n !== 'undefined' ? i18n.t('home.online') : 'Online';
+
     hero.innerHTML = `
         <div style="font-size:2.5rem">📡</div>
         <div class="home-hero-text">
-            <h2>Proxmark3 connesso</h2>
-            <p>Scegli un'operazione dalla lista o dalla sidebar. I comandi "rapidi" in verde permettono la rilevazione automatica dei tag.</p>
+            <h2>${heroTitle}</h2>
+            <p>${heroDesc}</p>
         </div>
         <div class="home-conn-info">
-            <span class="label">Porta attiva</span>
+            <span class="label">${activePort}</span>
             <span class="value">${port}</span>
-            <span class="badge badge-success mt-2">● Online</span>
+            <span class="badge badge-success mt-2">● ${onlineBadge}</span>
         </div>
     `;
     elCommandsGrid.appendChild(hero);
@@ -284,7 +315,7 @@ function renderHome() {
     // Featured section title
     const titleEl = document.createElement('div');
     titleEl.className = 'home-section-title';
-    titleEl.textContent = '⚡ Azioni rapide';
+    titleEl.textContent = typeof i18n !== 'undefined' ? i18n.t('home.quick_actions') : '⚡ Azioni rapide';
     elCommandsGrid.appendChild(titleEl);
 
     // Featured commands
@@ -296,7 +327,7 @@ function renderHome() {
     if (recentCmds.length > 0) {
         const recentTitle = document.createElement('div');
         recentTitle.className = 'home-section-title';
-        recentTitle.textContent = '⏱ Usati di recente';
+        recentTitle.textContent = typeof i18n !== 'undefined' ? i18n.t('home.recently_used') : '⏱ Usati di recente';
         elCommandsGrid.appendChild(recentTitle);
 
         for (const id of recentCmds.slice(0, 6)) {
@@ -308,12 +339,10 @@ function renderHome() {
 
 // ─── Category view ────────────────────────────────────────────────────────
 function renderCategoryView(cat, sub) {
-    const catInfo = CATEGORIES[cat];
+    const catInfo = typeof i18n !== 'undefined' ? i18n.getLocalizedCategory(cat, sub) : CATEGORIES[cat];
     const cmds = getCommandsByCategory(cat, sub || undefined);
 
-    const subInfo = sub && catInfo?.subcategories?.[sub];
-    document.getElementById('view-title').textContent =
-        (subInfo ? subInfo.label : catInfo?.label) || cat.toUpperCase();
+    document.getElementById('view-title').textContent = (catInfo?.label) || cat.toUpperCase();
     document.getElementById('view-desc').textContent = catInfo?.description || '';
 
     elCommandsGrid.innerHTML = '';
@@ -321,17 +350,19 @@ function renderCategoryView(cat, sub) {
         elCommandsGrid.appendChild(renderCmdCard(cmd, openCommandDetail));
     }
     if (cmds.length === 0) {
-        elCommandsGrid.innerHTML = `<div class="no-params-msg" style="grid-column:1/-1">Nessun comando disponibile in questa categoria.</div>`;
+        const emptyMsg = typeof i18n !== 'undefined' ? i18n.t('home.no_category_cmds') : 'Nessun comando disponibile in questa categoria.';
+        elCommandsGrid.innerHTML = `<div class="no-params-msg" style="grid-column:1/-1">${emptyMsg}</div>`;
     }
 }
 
 // ─── Recent view ──────────────────────────────────────────────────────────
 function renderRecent() {
-    document.getElementById('view-title').textContent = 'Usati di recente';
-    document.getElementById('view-desc').textContent = 'Gli ultimi comandi eseguiti.';
+    document.getElementById('view-title').textContent = typeof i18n !== 'undefined' ? i18n.t('recent.title') : 'Usati di recente';
+    document.getElementById('view-desc').textContent = typeof i18n !== 'undefined' ? i18n.t('recent.desc') : 'Gli ultimi comandi eseguiti.';
     elCommandsGrid.innerHTML = '';
     if (recentCmds.length === 0) {
-        elCommandsGrid.innerHTML = `<div class="no-params-msg" style="grid-column:1/-1">Nessun comando usato finora.</div>`;
+        const noRecent = typeof i18n !== 'undefined' ? i18n.t('home.no_recent') : 'Nessun comando usato finora.';
+        elCommandsGrid.innerHTML = `<div class="no-params-msg" style="grid-column:1/-1">${noRecent}</div>`;
         return;
     }
     for (const id of recentCmds.slice(0, 12)) {
@@ -343,14 +374,15 @@ function renderRecent() {
 // ─── Command detail ───────────────────────────────────────────────────────
 function openCommandDetail(cmd) {
     currentCmd = cmd;
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(cmd) : cmd;
 
-    elDetailIcon.textContent  = cmd.icon || '⚙';
-    elDetailTitle.textContent = cmd.name;
-    elDetailDesc.textContent  = cmd.description;
-    elDetailCmd.textContent   = cmd.pm3cmd;
+    elDetailIcon.textContent  = locCmd.icon || '⚙';
+    elDetailTitle.textContent = locCmd.name;
+    elDetailDesc.textContent  = locCmd.description;
+    elDetailCmd.textContent   = locCmd.pm3cmd;
 
-    renderParamForm(cmd, elParamForm);
-    updateCmdPreview(cmd, {});
+    renderParamForm(locCmd, elParamForm);
+    updateCmdPreview(locCmd, {});
 
     // Pulisci o ripristina le card dei risultati per questo comando
     elOutputResults.innerHTML = '';
@@ -363,8 +395,8 @@ function openCommandDetail(cmd) {
     // Add event: update preview on input
     elParamForm.querySelectorAll('input, select').forEach(el => {
         el.addEventListener('input', () => {
-            const vals = collectFormValues(cmd);
-            updateCmdPreview(cmd, vals);
+            const vals = collectFormValues(locCmd);
+            updateCmdPreview(locCmd, vals);
         });
     });
 }
@@ -390,20 +422,23 @@ document.getElementById('btn-run').addEventListener('click', () => {
 async function stopRunningCommand() {
     if (!isRunning || elStopCommand.disabled) return;
 
+    const stoppingText = typeof i18n !== 'undefined' ? i18n.t('output.stopping') : 'Arresto…';
+    const stopText = typeof i18n !== 'undefined' ? i18n.t('output.stop') : 'Interrompi';
+
     elStopCommand.disabled = true;
     elStopCommand.classList.add('stopping');
-    elStopCommand.querySelector('span').textContent = 'Arresto…';
+    elStopCommand.querySelector('span').textContent = stoppingText;
     elTerminalStop.disabled = true;
     elTerminalStop.classList.add('stopping');
-    elTerminalStop.querySelector('span').textContent = 'Arresto…';
+    elTerminalStop.querySelector('span').textContent = stoppingText;
     const result = await api.stop();
     if (!result.success) {
         elStopCommand.disabled = false;
         elStopCommand.classList.remove('stopping');
-        elStopCommand.querySelector('span').textContent = 'Interrompi';
+        elStopCommand.querySelector('span').textContent = stopText;
         elTerminalStop.disabled = false;
         elTerminalStop.classList.remove('stopping');
-        elTerminalStop.querySelector('span').textContent = 'Stop';
+        elTerminalStop.querySelector('span').textContent = typeof i18n !== 'undefined' ? i18n.t('terminal.stop') : 'Stop';
         showToast(result.error || 'Impossibile interrompere il comando.', 'error');
     }
 }
@@ -418,19 +453,25 @@ window.addEventListener('pm3-command-started', ({ detail }) => {
 
 document.getElementById('btn-copy-cmd').addEventListener('click', () => {
     if (!currentCmd) return;
-    const vals = collectFormValues(currentCmd);
-    const built = buildCommand(currentCmd, vals);
-    navigator.clipboard.writeText(built).then(() => showToast('Comando copiato!', 'success', 1500));
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(currentCmd) : currentCmd;
+    const vals = collectFormValues(locCmd);
+    const built = buildCommand(locCmd, vals);
+    const copiedMsg = typeof i18n !== 'undefined' ? i18n.t('detail.cmd_copied') : 'Comando copiato!';
+    navigator.clipboard.writeText(built).then(() => showToast(copiedMsg, 'success', 1500));
 });
 
 async function executeCommand(cmd) {
-    if (isRunning) { showToast('Un comando è già in esecuzione.', 'warning'); return; }
+    if (isRunning) {
+        showToast(typeof i18n !== 'undefined' ? i18n.t('output.already_running') : 'Un comando è già in esecuzione.', 'warning');
+        return;
+    }
 
-    const values = collectFormValues(cmd);
-    const err = validateFormValues(cmd, values);
+    const locCmd = typeof i18n !== 'undefined' ? i18n.getLocalizedCommand(cmd) : cmd;
+    const values = collectFormValues(locCmd);
+    const err = validateFormValues(locCmd, values);
     if (err) { showToast(err, 'error'); return; }
 
-    const finalCmd = buildCommand(cmd, values);
+    const finalCmd = buildCommand(locCmd, values);
 
     // Update recent
     recentCmds = [cmd.id, ...recentCmds.filter(id => id !== cmd.id)].slice(0, 20);
@@ -440,7 +481,7 @@ async function executeCommand(cmd) {
     commandCardsCache[cmd.id] = null;
     clearOutput();
     outputParser.reset();
-    elOutputTitle.textContent = cmd.name;
+    elOutputTitle.textContent = locCmd.name;
     setRunning(true);
     setOutputStatus('running');
 
@@ -450,7 +491,7 @@ async function executeCommand(cmd) {
 
     const result = await api.send(finalCmd);
     if (!result.success) {
-        appendRawLine('[!] Impossibile inviare il comando. Il processo pm3 non è in esecuzione.', 'error');
+        appendRawLine(typeof i18n !== 'undefined' ? i18n.t('output.cant_send') : '[!] Impossibile inviare il comando. Il processo pm3 non è in esecuzione.', 'error');
         setRunning(false);
         setOutputStatus('error');
         return;
@@ -459,7 +500,7 @@ async function executeCommand(cmd) {
     // Keep the stop control available for long-running attacks.
     setTimeout(() => {
         if (isRunning) {
-            appendRawLine('[=] Comando ancora in esecuzione dopo 10 minuti. Puoi interromperlo con il pulsante Stop.', 'warning');
+            appendRawLine(typeof i18n !== 'undefined' ? i18n.t('output.long_running_warn') : '[=] Comando ancora in esecuzione dopo 10 minuti. Puoi interromperlo con il pulsante Stop.', 'warning');
         }
     }, 600000);
 }
@@ -484,8 +525,11 @@ elGlobalSearch.addEventListener('input', () => {
         return;
     }
     const results = searchCommands(q);
-    document.getElementById('search-title').textContent =
-        `${results.length} risultat${results.length === 1 ? 'o' : 'i'} per "${q}"`;
+    const isIt = typeof i18n !== 'undefined' ? (i18n.getLang() === 'it') : true;
+    const plural = isIt ? (results.length === 1 ? 'o' : 'i') : (results.length === 1 ? '' : 's');
+    document.getElementById('search-title').textContent = typeof i18n !== 'undefined'
+        ? i18n.t('search.title', { count: results.length, plural, query: q })
+        : `${results.length} risultat${plural} per "${q}"`;
     elSearchGrid.innerHTML = '';
     for (const cmd of results) {
         elSearchGrid.appendChild(renderCmdCard(cmd, openCommandDetail));
@@ -504,6 +548,29 @@ document.addEventListener('keydown', e => {
 
 // ─── Terminal init ────────────────────────────────────────────────────────
 terminal.init(outputParser);
+
+// ─── i18n Language Change Hook ────────────────────────────────────────────
+if (typeof i18n !== 'undefined') {
+    i18n.onLanguageChange(() => {
+        refreshConnectionStatusText();
+        // Update sidebar category labels
+        document.querySelectorAll('.sidebar-label[data-category]').forEach(el => {
+            const [c, s] = el.dataset.category.split('/');
+            const info = i18n.getLocalizedCategory(c, s);
+            if (info) el.textContent = info.label;
+        });
+        // Re-render active view
+        if (currentView === 'detail' && currentCmd) {
+            openCommandDetail(currentCmd);
+        } else if (currentView === 'search') {
+            const q = elGlobalSearch.value.trim();
+            if (q) elGlobalSearch.dispatchEvent(new Event('input'));
+            else navigateTo('home');
+        } else {
+            navigateTo(currentView);
+        }
+    });
+}
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────
 navigateTo('home');

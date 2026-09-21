@@ -177,10 +177,10 @@ const terminal = (() => {
             if (result.success) {
                 window.dispatchEvent(new CustomEvent('pm3-command-started', { detail: { cmd } }));
             } else {
-                appendLine('[!] Un altro comando è già in esecuzione.', 'warning');
+                appendLine(typeof i18n !== 'undefined' ? i18n.t('terminal.already_running') : '[!] Un altro comando è già in esecuzione.', 'warning');
             }
         } catch (err) {
-            appendLine(`[!] Errore invio: ${err.message}`, 'error');
+            appendLine(typeof i18n !== 'undefined' ? i18n.t('terminal.send_error', { err: err.message }) : `[!] Errore invio: ${err.message}`, 'error');
         }
 
         input.value = '';

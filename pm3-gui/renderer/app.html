@@ -33,23 +33,27 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <input type="search" id="global-search" placeholder="Cerca comando…" autocomplete="off" spellcheck="false"/>
+        <input type="search" id="global-search" placeholder="Cerca comando…" data-i18n-placeholder="titlebar.search_placeholder" autocomplete="off" spellcheck="false"/>
         <kbd>Ctrl+K</kbd>
     </div>
 
     <div class="titlebar__controls">
-        <button class="titlebar-update" id="btn-update" type="button" title="Verifica e aggiorna firmware, bootloader e client PM3">
+        <div class="lang-switch" id="lang-switch" role="group" aria-label="Lingua / Language">
+            <button type="button" class="lang-btn active" data-lang="it" title="Italiano">ITA</button>
+            <button type="button" class="lang-btn" data-lang="en" title="English">ENG</button>
+        </div>
+        <button class="titlebar-update" id="btn-update" type="button" title="Verifica e aggiorna firmware, bootloader e client PM3" data-i18n-title="titlebar.update_tooltip">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 12a9 9 0 0 1-15.2 6.5L3 16"/><path d="M3 21v-5h5"/>
                 <path d="M3 12A9 9 0 0 1 18.2 5.5L21 8"/><path d="M21 3v5h-5"/>
             </svg>
-            <span>Aggiorna</span>
+            <span data-i18n="titlebar.update">Aggiorna</span>
         </button>
-        <button class="titlebar__btn" id="btn-terminal" title="Terminale raw" data-tooltip="Terminale">⌨</button>
-        <button class="titlebar__btn" id="btn-disconnect" title="Disconnetti">⏹</button>
-        <button class="titlebar__btn" id="btn-minimize" title="Minimizza">─</button>
-        <button class="titlebar__btn" id="btn-maximize" title="Massimizza">□</button>
-        <button class="titlebar__btn close" id="btn-close" title="Chiudi">✕</button>
+        <button class="titlebar__btn" id="btn-terminal" title="Terminale raw" data-i18n-title="titlebar.terminal_tooltip">⌨</button>
+        <button class="titlebar__btn" id="btn-disconnect" title="Disconnetti" data-i18n-title="titlebar.disconnect">⏹</button>
+        <button class="titlebar__btn" id="btn-minimize" title="Riduci a icona" data-i18n-title="titlebar.minimize_tooltip">─</button>
+        <button class="titlebar__btn" id="btn-maximize" title="Massimizza" data-i18n-title="titlebar.maximize_tooltip">□</button>
+        <button class="titlebar__btn close" id="btn-close" title="Chiudi" data-i18n-title="titlebar.close_tooltip">✕</button>
     </div>
 </div>
 
@@ -63,19 +67,19 @@
 
         <!-- Comandi preferiti / recenti -->
         <div class="sidebar-section">
-            <div class="sidebar-heading">Rapido</div>
+            <div class="sidebar-heading" data-i18n="sidebar.quick">Rapido</div>
             <button class="sidebar-item active" data-view="home" id="nav-home">
                 <span class="sidebar-icon">🏠</span>
-                <span>Home</span>
+                <span data-i18n="sidebar.home">Home</span>
             </button>
             <button class="sidebar-item" data-view="auto" id="nav-auto">
                 <span class="sidebar-icon">🔍</span>
-                <span>Auto-Detection</span>
+                <span data-i18n="sidebar.auto">Auto-Detection</span>
                 <span class="sidebar-badge">Hotkey</span>
             </button>
             <button class="sidebar-item" data-view="recent" id="nav-recent">
                 <span class="sidebar-icon">⏱</span>
-                <span>Usati di recente</span>
+                <span data-i18n="sidebar.recent">Usati di recente</span>
             </button>
         </div>
 
@@ -83,27 +87,27 @@
 
         <!-- HF -->
         <div class="sidebar-section">
-            <div class="sidebar-heading" style="color: #9d5cf6;">📶 HF — 13.56 MHz</div>
+            <div class="sidebar-heading" id="sidebar-heading-hf" style="color: #9d5cf6;" data-i18n="sidebar.hf">📶 HF — 13.56 MHz</div>
             <button class="sidebar-item" data-view="hf/nfc">
-                <span class="sidebar-icon">📲</span><span>NFC / ISO 14443-A</span>
+                <span class="sidebar-icon">📲</span><span class="sidebar-label" data-category="hf/nfc">NFC / ISO 14443-A</span>
             </button>
             <button class="sidebar-item" data-view="hf/mf">
-                <span class="sidebar-icon">🃏</span><span>MIFARE Classic</span>
+                <span class="sidebar-icon">🃏</span><span class="sidebar-label" data-category="hf/mf">MIFARE Classic</span>
             </button>
             <button class="sidebar-item" data-view="hf/mfu">
-                <span class="sidebar-icon">📋</span><span>Ultralight / NTAG</span>
+                <span class="sidebar-icon">📋</span><span class="sidebar-label" data-category="hf/mfu">Ultralight / NTAG</span>
             </button>
             <button class="sidebar-item" data-view="hf/desfire">
-                <span class="sidebar-icon">🔐</span><span>MIFARE DESFire</span>
+                <span class="sidebar-icon">🔐</span><span class="sidebar-label" data-category="hf/desfire">MIFARE DESFire</span>
             </button>
             <button class="sidebar-item" data-view="hf/iclass">
-                <span class="sidebar-icon">🏢</span><span>iClass / SEOS</span>
+                <span class="sidebar-icon">🏢</span><span class="sidebar-label" data-category="hf/iclass">iClass / SEOS</span>
             </button>
             <button class="sidebar-item" data-view="hf/felica">
-                <span class="sidebar-icon">🇯🇵</span><span>FeliCa</span>
+                <span class="sidebar-icon">🇯🇵</span><span class="sidebar-label" data-category="hf/felica">FeliCa</span>
             </button>
             <button class="sidebar-item" data-view="hf/15693">
-                <span class="sidebar-icon">📦</span><span>ISO 15693</span>
+                <span class="sidebar-icon">📦</span><span class="sidebar-label" data-category="hf/15693">ISO 15693</span>
             </button>
         </div>
 
@@ -111,15 +115,15 @@
 
         <!-- LF -->
         <div class="sidebar-section">
-            <div class="sidebar-heading" style="color: #34d399;">📻 LF — 125 kHz</div>
+            <div class="sidebar-heading" id="sidebar-heading-lf" style="color: #34d399;" data-i18n="sidebar.lf">📻 LF — 125 kHz</div>
             <button class="sidebar-item" data-view="lf/em410x">
-                <span class="sidebar-icon">📻</span><span>EM410x</span>
+                <span class="sidebar-icon">📻</span><span class="sidebar-label" data-category="lf/em410x">EM410x</span>
             </button>
             <button class="sidebar-item" data-view="lf/hid">
-                <span class="sidebar-icon">🏷</span><span>HID Proximity</span>
+                <span class="sidebar-icon">🏷</span><span class="sidebar-label" data-category="lf/hid">HID Proximity</span>
             </button>
             <button class="sidebar-item" data-view="lf/t55xx">
-                <span class="sidebar-icon">🔄</span><span>T55xx</span>
+                <span class="sidebar-icon">🔄</span><span class="sidebar-label" data-category="lf/t55xx">T55xx</span>
             </button>
         </div>
 
@@ -127,15 +131,15 @@
 
         <!-- Other -->
         <div class="sidebar-section">
-            <div class="sidebar-heading">Altro</div>
+            <div class="sidebar-heading" data-i18n="sidebar.other">Altro</div>
             <button class="sidebar-item" data-view="hw">
-                <span class="sidebar-icon">🖥</span><span>Hardware</span>
+                <span class="sidebar-icon">🖥</span><span data-i18n="sidebar.hw">Hardware</span>
             </button>
             <button class="sidebar-item" data-view="analyse">
-                <span class="sidebar-icon">🧠</span><span>Analisi & Dati</span>
+                <span class="sidebar-icon">🧠</span><span data-i18n="sidebar.analyse">Analisi & Dati</span>
             </button>
             <button class="sidebar-item" data-view="smart">
-                <span class="sidebar-icon">💳</span><span>Smart Card / EMV</span>
+                <span class="sidebar-icon">💳</span><span data-i18n="sidebar.smart">Smart Card / EMV</span>
             </button>
         </div>
 
@@ -163,7 +167,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <path d="M19 12H5M12 5l-7 7 7 7"/>
                 </svg>
-                Indietro
+                <span data-i18n="detail.back">Indietro</span>
             </button>
 
             <div class="detail-header">
@@ -173,7 +177,7 @@
                     <p class="detail-desc text-muted" id="detail-desc"></p>
                 </div>
                 <div class="detail-cmd-badge">
-                    <span class="text-xs text-muted">Comando Proxmark3:</span>
+                    <span class="text-xs text-muted" data-i18n="detail.cmd_badge">Comando Proxmark3:</span>
                     <code class="mono text-xs text-cyan" id="detail-cmd-preview"></code>
                 </div>
             </div>
@@ -186,13 +190,13 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
-                        Esegui
+                        <span data-i18n="detail.run">Esegui</span>
                     </button>
-                    <button class="btn btn-secondary" id="btn-copy-cmd" title="Copia comando">
+                    <button class="btn btn-secondary" id="btn-copy-cmd" title="Copia comando" data-i18n-title="detail.copy">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                         </svg>
-                        Copia
+                        <span data-i18n="detail.copy">Copia</span>
                     </button>
                 </div>
             </div>
@@ -220,15 +224,15 @@
         <div class="output-header">
             <div class="output-header-left">
                 <div class="output-indicator" id="output-indicator"></div>
-                <span class="output-title" id="output-title">Output</span>
+                <span class="output-title" id="output-title" data-i18n="output.title">Output</span>
             </div>
             <div class="output-header-right">
-                <button class="btn btn-icon btn-sm" id="btn-copy-output" title="Copia output negli appunti">
+                <button class="btn btn-icon btn-sm" id="btn-copy-output" title="Copia output negli appunti" data-i18n-title="output.copy_tooltip">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                     </svg>
                 </button>
-                <button class="btn btn-icon btn-sm" id="btn-clear-output" title="Cancella output">
+                <button class="btn btn-icon btn-sm" id="btn-clear-output" title="Cancella output" data-i18n-title="output.clear_tooltip">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
@@ -242,12 +246,12 @@
         <!-- Running indicator -->
         <div class="output-running hidden" id="output-running">
             <div class="spinner"></div>
-            <span class="text-sm text-muted output-running__label">Comando in esecuzione…</span>
+            <span class="text-sm text-muted output-running__label" data-i18n="output.running">Comando in esecuzione…</span>
             <button class="btn btn-stop btn-sm" id="btn-stop-command" type="button" title="Interrompi il comando Proxmark3 in esecuzione">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <rect x="5" y="5" width="14" height="14" rx="2"/>
                 </svg>
-                <span>Interrompi</span>
+                <span data-i18n="output.stop">Interrompi</span>
             </button>
         </div>
 
@@ -265,44 +269,44 @@
                 </svg>
             </div>
             <div>
-                <div class="update-kicker">PM3 ENGINE CONTROL</div>
-                <h2 id="update-title">Aggiornamento Proxmark3</h2>
-                <p id="update-subtitle">Verifica coordinata di client, firmware e bootloader.</p>
+                <div class="update-kicker" data-i18n="updater.kicker">PM3 ENGINE CONTROL</div>
+                <h2 id="update-title" data-i18n="updater.title">Aggiornamento Proxmark3</h2>
+                <p id="update-subtitle" data-i18n="updater.subtitle">Verifica coordinata di client, firmware e bootloader.</p>
             </div>
-            <button class="btn btn-icon" id="btn-update-close" type="button" aria-label="Chiudi aggiornamento">✕</button>
+            <button class="btn btn-icon" id="btn-update-close" type="button" aria-label="Chiudi aggiornamento" data-i18n-title="updater.close">✕</button>
         </div>
 
         <div class="update-body">
             <div class="update-state" id="update-state">
                 <div class="update-state__icon" id="update-state-icon">↻</div>
                 <div>
-                    <strong id="update-state-title">Controllo in corso</strong>
-                    <span id="update-state-message">Lettura della versione installata…</span>
+                    <strong id="update-state-title" data-i18n="updater.checking_title">Controllo in corso</strong>
+                    <span id="update-state-message" data-i18n="updater.checking_desc">Lettura della versione installata…</span>
                 </div>
             </div>
 
             <div class="update-version-grid hidden" id="update-version-grid">
                 <div class="update-version-card">
-                    <span>Firmware dispositivo</span>
+                    <span data-i18n="updater.device_fw">Firmware dispositivo</span>
                     <strong class="mono" id="update-device-version">—</strong>
                 </div>
                 <div class="update-version-card">
-                    <span>Client attivo</span>
+                    <span data-i18n="updater.active_client">Client attivo</span>
                     <strong class="mono" id="update-client-version">—</strong>
                 </div>
                 <div class="update-version-card accent">
-                    <span>Ultimo tag RRG</span>
+                    <span data-i18n="updater.latest_rrg">Ultimo tag RRG</span>
                     <strong class="mono" id="update-official-version">—</strong>
                 </div>
                 <div class="update-version-card cyan">
-                    <span>Build Windows disponibile</span>
+                    <span data-i18n="updater.win_build">Build Windows disponibile</span>
                     <strong class="mono" id="update-package-version">—</strong>
                 </div>
             </div>
 
             <div class="update-hardware hidden" id="update-hardware">
                 <div>
-                    <span class="update-label">Hardware rilevato</span>
+                    <span class="update-label" data-i18n="updater.detected_hw">Hardware rilevato</span>
                     <strong id="update-hardware-label">—</strong>
                 </div>
                 <select id="update-variant" aria-label="Variante firmware Proxmark3">
@@ -310,7 +314,7 @@
                     <option value="rdv4">Proxmark3 RDV4</option>
                     <option value="rdv4_bt">RDV4 + BlueShark</option>
                 </select>
-                <button class="btn btn-secondary btn-sm" id="btn-update-variant" type="button">Usa questa variante</button>
+                <button class="btn btn-secondary btn-sm" id="btn-update-variant" type="button" data-i18n="updater.use_variant">Usa questa variante</button>
             </div>
 
             <div class="update-notice hidden" id="update-notice"></div>
@@ -326,14 +330,14 @@
 
             <label class="update-consent hidden" id="update-consent-wrap">
                 <input type="checkbox" id="update-consent"/>
-                <span>Confermo che è l’unico Proxmark3 collegato, che resterà alimentato via USB e che non chiuderò l’app durante il flash.</span>
+                <span data-i18n="updater.consent">Confermo che è l’unico Proxmark3 collegato, che resterà alimentato via USB e che non chiuderò l’app durante il flash.</span>
             </label>
         </div>
 
         <div class="update-footer">
-            <span class="update-source">RRG ufficiale · pacchetto Windows Proxmarkbuilds</span>
-            <button class="btn btn-secondary" id="btn-update-retry" type="button">Ricontrolla</button>
-            <button class="btn btn-primary" id="btn-update-install" type="button" disabled>Aggiorna ora</button>
+            <span class="update-source" data-i18n="updater.source_hint">RRG ufficiale · pacchetto Windows Proxmarkbuilds</span>
+            <button class="btn btn-secondary" id="btn-update-retry" type="button" data-i18n="updater.retry">Ricontrolla</button>
+            <button class="btn btn-primary" id="btn-update-install" type="button" disabled data-i18n="updater.install_now">Aggiorna ora</button>
         </div>
     </div>
 </div>
@@ -357,12 +361,12 @@
                 <div class="terminal-dot yellow"></div>
                 <div class="terminal-dot green"></div>
             </div>
-            <span class="text-sm text-muted terminal-header__title">proxmark3 — Terminale raw <small>· trascina i bordi per ridimensionare</small></span>
+            <span class="text-sm text-muted terminal-header__title"><span data-i18n="terminal.title">proxmark3 — Terminale raw</span> <small>· <span data-i18n="terminal.resize_hint">trascina i bordi per ridimensionare</span></small></span>
             <button class="btn btn-stop btn-sm hidden" id="btn-terminal-stop" type="button" title="Interrompi il comando in esecuzione">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <rect x="5" y="5" width="14" height="14" rx="2"/>
                 </svg>
-                <span>Stop</span>
+                <span data-i18n="terminal.stop">Stop</span>
             </button>
             <button class="btn btn-icon btn-sm" id="btn-close-terminal">✕</button>
         </div>
@@ -370,12 +374,13 @@
         <div class="terminal-input-bar">
             <span class="terminal-prompt">pm3&gt;</span>
             <input type="text" id="terminal-input" class="terminal-input mono"
-                   placeholder="Digita un comando proxmark3…" autocomplete="off" spellcheck="false"/>
-            <button class="btn btn-primary btn-sm" id="btn-terminal-send">Invia</button>
+                   placeholder="Digita un comando proxmark3…" data-i18n-placeholder="terminal.placeholder" autocomplete="off" spellcheck="false"/>
+            <button class="btn btn-primary btn-sm" id="btn-terminal-send" data-i18n="terminal.send">Invia</button>
         </div>
     </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script src="js/commands.js" defer></script>
 <script src="js/parser.js" defer></script>
 <script src="js/ui.js" defer></script>

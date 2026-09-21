@@ -68,7 +68,9 @@
         dom.progressBar.style.width = '0%';
         dom.progressValue.textContent = '0%';
         setNotice('');
-        setState('checking', 'Controllo in corso', 'Lettura della versione installata…', '↻');
+        const chkTitle = typeof i18n !== 'undefined' ? i18n.t('updater.checking_title') : 'Controllo in corso';
+        const chkDesc = typeof i18n !== 'undefined' ? i18n.t('updater.checking_desc') : 'Lettura della versione installata…';
+        setState('checking', chkTitle, chkDesc, '↻');
     }
 
     function setBusy(value) {
@@ -99,8 +101,9 @@
         checkData = check;
         dom.grid.classList.remove('hidden');
         dom.hardware.classList.remove('hidden');
-        dom.deviceVersion.textContent = check.device.firmware || 'Non rilevato';
-        dom.clientVersion.textContent = check.localClient || 'Non rilevato';
+        const notDet = typeof i18n !== 'undefined' ? i18n.t('updater.not_detected') : 'Non rilevato';
+        dom.deviceVersion.textContent = check.device.firmware || notDet;
+        dom.clientVersion.textContent = check.localClient || notDet;
         dom.officialVersion.textContent = check.official.tag || '—';
         dom.hardwareLabel.textContent = `${check.device.hardware}${check.device.flashKb ? ` · ${check.device.flashKb} KB` : ''}`;
 
@@ -110,37 +113,37 @@
         if (check.package) {
             dom.packageVersion.textContent = `${check.package.commit.slice(0, 9)} · ${formatDate(check.package.buildDate)}`;
         } else {
-            dom.packageVersion.textContent = 'Seleziona hardware';
+            dom.packageVersion.textContent = typeof i18n !== 'undefined' ? i18n.t('updater.select_hw') : 'Seleziona hardware';
         }
 
         if (check.requiresVariant) {
-            setState('warning', 'Conferma il modello', 'Il tipo di Proxmark3 non è identificabile con certezza.', '!');
-            setNotice('Scegli la variante corretta: un firmware RDV4 non deve essere installato su un Proxmark3 Easy/Generic.', 'error');
+            setState('warning', typeof i18n !== 'undefined' ? i18n.t('updater.confirm_model') : 'Conferma il modello', typeof i18n !== 'undefined' ? i18n.t('updater.confirm_model_msg') : 'Il tipo di Proxmark3 non è identificabile con certezza.', '!');
+            setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.confirm_model_notice') : 'Scegli la variante corretta: un firmware RDV4 non deve essere installato su un Proxmark3 Easy/Generic.', 'error');
             return;
         }
         if (check.blockedReason) {
-            setState('error', 'Aggiornamento automatico bloccato', check.blockedReason, '×');
+            setState('error', typeof i18n !== 'undefined' ? i18n.t('updater.blocked_title') : 'Aggiornamento automatico bloccato', check.blockedReason, '×');
             setNotice(check.blockedReason, 'error');
             return;
         }
         if (check.packageUpdateAvailable) {
-            setState('success', 'Aggiornamento disponibile', 'Il pacchetto Windows è più recente del firmware attivo.', '✓');
+            setState('success', typeof i18n !== 'undefined' ? i18n.t('updater.available_title') : 'Aggiornamento disponibile', typeof i18n !== 'undefined' ? i18n.t('updater.available_msg') : 'Il pacchetto Windows è più recente del firmware attivo.', '✓');
             dom.consentWrap.classList.remove('hidden');
             if (check.packageBehindOfficial) {
-                setNotice(`Il tag ufficiale ${check.official.tag} è più recente della build Windows disponibile. Verrà installata la build verificata ${check.package.commit.slice(0, 9)}; potrai ricontrollare quando il pacchetto del nuovo tag sarà pubblicato.`, 'info');
+                setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.behind_official', { tag: check.official.tag, commit: check.package.commit.slice(0, 9) }) : `Il tag ufficiale ${check.official.tag} è più recente della build Windows disponibile. Verrà installata la build verificata ${check.package.commit.slice(0, 9)}; potrai ricontrollare quando il pacchetto del nuovo tag sarà pubblicato.`, 'info');
             } else {
-                setNotice('Bootloader, full image e client verranno aggiornati come un unico set compatibile.', 'info');
+                setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.standard_notice') : 'Bootloader, full image e client verranno aggiornati come un unico set compatibile.', 'info');
             }
             dom.install.disabled = !dom.consent.checked;
             return;
         }
         if (check.officialUpdateAvailable && check.packageBehindOfficial) {
-            setState('warning', 'Build Windows in attesa', `Il tag ${check.official.tag} esiste, ma il relativo pacchetto Windows non è ancora disponibile.`, '!');
-            setNotice('Nessun flash verrà eseguito finché non sarà disponibile un pacchetto Windows verificabile e più recente.', 'info');
+            setState('warning', typeof i18n !== 'undefined' ? i18n.t('updater.waiting_win_title') : 'Build Windows in attesa', typeof i18n !== 'undefined' ? i18n.t('updater.waiting_win_msg', { tag: check.official.tag }) : `Il tag ${check.official.tag} esiste, ma il relativo pacchetto Windows non è ancora disponibile.`, '!');
+            setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.waiting_win_notice') : 'Nessun flash verrà eseguito finché non sarà disponibile un pacchetto Windows verificabile e più recente.', 'info');
             return;
         }
-        setState('success', 'Proxmark3 aggiornato', 'Firmware e pacchetto Windows disponibile risultano allineati.', '✓');
-        setNotice('Non è necessario eseguire alcun flash.', 'info');
+        setState('success', typeof i18n !== 'undefined' ? i18n.t('updater.up_to_date_title') : 'Proxmark3 aggiornato', typeof i18n !== 'undefined' ? i18n.t('updater.up_to_date_msg') : 'Firmware e pacchetto Windows disponibile risultano allineati.', '✓');
+        setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.no_flash_needed') : 'Non è necessario eseguire alcun flash.', 'info');
     }
 
     async function runCheck(variant) {
@@ -149,11 +152,11 @@
         dom.progress.classList.add('hidden');
         dom.consentWrap.classList.add('hidden');
         setNotice('');
-        setState('checking', 'Controllo in corso', 'Interrogazione del dispositivo e del repository RRG…', '↻');
+        setState('checking', typeof i18n !== 'undefined' ? i18n.t('updater.checking_title') : 'Controllo in corso', typeof i18n !== 'undefined' ? i18n.t('updater.querying_desc') : 'Interrogazione del dispositivo e del repository RRG…', '↻');
         const result = await api.checkUpdate(variant);
         setBusy(false);
         if (!result.success) {
-            setState('error', 'Controllo non riuscito', result.error, '×');
+            setState('error', typeof i18n !== 'undefined' ? i18n.t('updater.check_failed') : 'Controllo non riuscito', result.error, '×');
             setNotice(result.error, 'error');
             return;
         }
@@ -167,7 +170,15 @@
         protectedPhase = phase === 'flashing' || phase === 'verifying';
         if (busy) dom.close.disabled = true;
 
-        const labels = {
+        const labels = typeof i18n !== 'undefined' ? {
+            download: i18n.t('updater.phase_download'),
+            'verify-download': i18n.t('updater.phase_verify_download'),
+            extract: i18n.t('updater.phase_extract'),
+            flashing: i18n.t('updater.phase_flashing'),
+            verifying: i18n.t('updater.phase_verifying'),
+            complete: i18n.t('updater.phase_complete'),
+            failed: i18n.t('updater.phase_failed'),
+        } : {
             download: 'Download pacchetto Windows',
             'verify-download': 'Verifica SHA-256',
             extract: 'Estrazione sicura',
@@ -184,7 +195,8 @@
         if (phase === 'complete') percent = 100;
 
         dom.progress.classList.remove('hidden');
-        dom.progressLabel.textContent = info.message || labels[phase] || 'Aggiornamento…';
+        const defaultPrep = typeof i18n !== 'undefined' ? i18n.t('updater.preparing') : 'Aggiornamento…';
+        dom.progressLabel.textContent = info.message || labels[phase] || defaultPrep;
         if (percent !== null) {
             const bounded = Math.max(0, Math.min(100, percent));
             dom.progressBar.style.width = `${bounded}%`;
@@ -194,8 +206,8 @@
         }
 
         if (protectedPhase) {
-            setState('working', 'Flash protetto in corso', info.message || 'Non scollegare il dispositivo.', '↻');
-            setNotice('Non chiudere l’app e non scollegare il cavo USB fino alla verifica finale.', 'error');
+            setState('working', typeof i18n !== 'undefined' ? i18n.t('updater.protected_flash_title') : 'Flash protetto in corso', info.message || (typeof i18n !== 'undefined' ? i18n.t('updater.protected_flash_msg') : 'Non scollegare il dispositivo.'), '↻');
+            setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.protected_flash_notice') : 'Non chiudere l’app e non scollegare il cavo USB fino alla verifica finale.', 'error');
         }
     }
 
@@ -214,8 +226,8 @@
         dom.variant.disabled = true;
         dom.progress.classList.remove('hidden');
         dom.log.textContent = '';
-        setState('working', 'Preparazione aggiornamento', 'Download e verifica del pacchetto…', '↻');
-        setNotice('Il flash inizierà soltanto dopo la verifica completa del pacchetto.', 'info');
+        setState('working', typeof i18n !== 'undefined' ? i18n.t('updater.start_prep') : 'Preparazione aggiornamento', typeof i18n !== 'undefined' ? i18n.t('updater.start_prep_msg') : 'Download e verifica del pacchetto…', '↻');
+        setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.verify_first_notice') : 'Il flash inizierà soltanto dopo la verifica completa del pacchetto.', 'info');
 
         const result = await api.startUpdate(token);
         busy = false;
@@ -225,10 +237,10 @@
         dom.variant.disabled = false;
         dom.retry.disabled = false;
         if (!result.success) {
-            setState('error', 'Aggiornamento non completato', result.error, '×');
+            setState('error', typeof i18n !== 'undefined' ? i18n.t('updater.update_failed_title') : 'Aggiornamento non completato', result.error, '×');
             const recovery = result.recoveryPath ? ` Pacchetto di recovery conservato in: ${result.recoveryPath}` : '';
             setNotice(`${result.error}${recovery}`, 'error');
-            if (typeof showToast === 'function') showToast('Aggiornamento PM3 non completato.', 'error', 5000);
+            if (typeof showToast === 'function') showToast(typeof i18n !== 'undefined' ? i18n.t('updater.update_failed_toast') : 'Aggiornamento PM3 non completato.', 'error', 5000);
             return;
         }
 
@@ -236,10 +248,10 @@
         dom.progressValue.textContent = '100%';
         dom.deviceVersion.textContent = result.firmware || result.version;
         dom.clientVersion.textContent = result.version;
-        setState('success', 'Aggiornamento completato', `${result.version} installato e verificato sul dispositivo.`, '✓');
-        setNotice(`Client attivato correttamente. SHA-256: ${result.sha256}`, 'info');
+        setState('success', typeof i18n !== 'undefined' ? i18n.t('updater.update_success_title') : 'Aggiornamento completato', typeof i18n !== 'undefined' ? i18n.t('updater.update_success_msg', { version: result.version }) : `${result.version} installato e verificato sul dispositivo.`, '✓');
+        setNotice(typeof i18n !== 'undefined' ? i18n.t('updater.update_success_notice', { sha256: result.sha256 }) : `Client attivato correttamente. SHA-256: ${result.sha256}`, 'info');
         dom.consentWrap.classList.add('hidden');
-        if (typeof showToast === 'function') showToast(`PM3 aggiornato a ${result.version}.`, 'success', 5000);
+        if (typeof showToast === 'function') showToast(typeof i18n !== 'undefined' ? i18n.t('updater.update_success_toast', { version: result.version }) : `PM3 aggiornato a ${result.version}.`, 'success', 5000);
     }
 
     dom.button.addEventListener('click', open);

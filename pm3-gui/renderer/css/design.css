@@ -204,6 +204,47 @@ p  { line-height: 1.6; color: var(--text-secondary); }
 .titlebar__btn:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); }
 .titlebar__btn.close:hover { background: var(--error-dim); color: var(--error); }
 
+/* ─── Language Switcher ──────────────────────────────────────────────────── */
+.lang-switch {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-full);
+    padding: 2px;
+    gap: 2px;
+    -webkit-app-region: no-drag;
+    margin-right: var(--sp-2);
+}
+
+.lang-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: var(--r-full);
+    cursor: pointer;
+    transition: all var(--dur-fast) var(--ease);
+    line-height: 1.2;
+}
+
+.lang-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lang-btn.active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.35);
+    border-color: rgba(124, 58, 237, 0.6);
+}
+
 /* ─── Status Dot ─────────────────────────────────────────────────────────── */
 .status-dot {
     width: 8px; height: 8px;

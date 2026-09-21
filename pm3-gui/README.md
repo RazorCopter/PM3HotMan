@@ -27,6 +27,7 @@ npm start
 - Rilevamento automatico delle varianti Generic/Easy, RDV4 e RDV4 + BlueShark
 - Verifica del commit RRG, SHA-256, struttura archivio e versione incorporata prima del flash
 - Installazione versionata del nuovo client con attivazione solo dopo la verifica hardware finale
+- Selettore lingua ITA / ENG istantaneo nella barra del titolo con salvataggio preferenza
 - Ricerca globale comandi (Ctrl+K)
 
 ## Aggiornamento Proxmark3

@@ -1,6 +1,6 @@
 {
   "name": "pm3-hotman-gui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Premium GUI for Proxmark3 (Iceman fork) on Windows",
   "main": "main.js",
   "scripts": {

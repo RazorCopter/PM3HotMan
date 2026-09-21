@@ -633,12 +633,17 @@ function getFeaturedCommands() { return COMMANDS.filter(c => c.featured); }
 function searchCommands(query) {
     const q = query.toLowerCase().trim();
     if (!q) return COMMANDS;
-    return COMMANDS.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q) ||
-        c.tags.some(t => t.includes(q)) ||
-        c.pm3cmd.includes(q)
-    );
+    return COMMANDS.filter(c => {
+        const en = (typeof i18n !== 'undefined' && i18n.COMMANDS_EN) ? i18n.COMMANDS_EN[c.id] : null;
+        return (
+            c.name.toLowerCase().includes(q) ||
+            c.description.toLowerCase().includes(q) ||
+            (en && en.name && en.name.toLowerCase().includes(q)) ||
+            (en && en.description && en.description.toLowerCase().includes(q)) ||
+            c.tags.some(t => t.includes(q)) ||
+            c.pm3cmd.includes(q)
+        );
+    });
 }
 
 function buildCommand(cmd, values) {
