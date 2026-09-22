@@ -55,7 +55,24 @@ async function scanPorts() {
     }
 }
 
+function isProxmarkDevice(p) {
+    if (!p) return false;
+    const m = (p.manufacturer || '').toLowerCase();
+    const fn = (p.friendlyName || '').toLowerCase();
+    const vid = (p.vendorId || '').toLowerCase();
+    const pid = (p.productId || '').toLowerCase();
+    return m.includes('proxmark') || fn.includes('proxmark') || vid === '9ac4' || (vid === '2d2d' && pid === '504d');
+}
+
 function renderPorts(ports) {
+    // Determine smart selection if not manually chosen
+    const pm3Device = ports.find(isProxmarkDevice);
+    if (!selectedPort && pm3Device) {
+        selectedPort = pm3Device.path;
+    } else if (!selectedPort && ports.length > 0) {
+        selectedPort = ports[0].path;
+    }
+
     // Update <select>
     const prev = elPort.value;
     elPort.innerHTML = '';
@@ -69,26 +86,32 @@ function renderPorts(ports) {
         ports.forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.path;
-            opt.textContent = `${p.path}${p.manufacturer ? ' — ' + p.manufacturer : ''}`;
-            if (p.path === prev || p.path === selectedPort) opt.selected = true;
+            const isPm3 = isProxmarkDevice(p);
+            opt.textContent = `${p.path}${p.manufacturer ? ' — ' + p.manufacturer : ''}${isPm3 ? ' ★ Proxmark3' : ''}`;
+            if (p.path === selectedPort || (!selectedPort && p.path === prev)) opt.selected = true;
             elPort.appendChild(opt);
         });
+    }
+
+    if (selectedPort) {
+        elPort.value = selectedPort;
     }
 
     // Cards under select
     elPortList.innerHTML = '';
     const defaultSerial = typeof i18n !== 'undefined' ? i18n.t('connect.badge_serial') : 'Dispositivo seriale';
     ports.slice(0, 4).forEach((p, i) => {
+        const isPm3 = isProxmarkDevice(p);
         const card = document.createElement('div');
         card.className = `port-info-card${p.path === (elPort.value || selectedPort) ? ' selected' : ''}`;
         card.style.animationDelay = `${i * 40}ms`;
         card.innerHTML = `
-            <div class="port-icon">🔌</div>
+            <div class="port-icon">${isPm3 ? '🎯' : '🔌'}</div>
             <div>
-                <div class="port-name">${p.path}</div>
+                <div class="port-name">${p.path}${isPm3 ? ' <span class="badge badge-accent" style="font-size:0.65rem; padding: 2px 6px; vertical-align: middle;">PROXMARK3</span>' : ''}</div>
                 <div class="port-desc">${p.manufacturer || p.friendlyName || defaultSerial}</div>
             </div>
-            ${p.vendorId ? `<div class="badge badge-accent ms-auto">${p.vendorId}:${p.productId}</div>` : ''}
+            ${p.vendorId ? `<div class="badge ${isPm3 ? 'badge-primary' : 'badge-accent'} ms-auto">${p.vendorId}:${p.productId}</div>` : ''}
         `;
         card.addEventListener('click', () => {
             elPort.value = p.path;
@@ -98,18 +121,12 @@ function renderPorts(ports) {
         });
         elPortList.appendChild(card);
     });
-
-    // Auto-select first if nothing chosen
-    if (!elPort.value && ports.length > 0) {
-        elPort.value = ports[0].path;
-        selectedPort = ports[0].path;
-    }
 }
 
 elPort.addEventListener('change', () => {
     selectedPort = elPort.value;
     elPortList.querySelectorAll('.port-info-card').forEach(c => {
-        c.classList.toggle('selected', c.querySelector('.port-name')?.textContent === selectedPort);
+        c.classList.toggle('selected', c.querySelector('.port-name')?.textContent?.includes(selectedPort));
     });
 });
 
@@ -119,9 +136,12 @@ elScan.addEventListener('click', scanPorts);
 scanInterval = setInterval(scanPorts, 3000);
 scanPorts(); // immediate
 
-// ─── Browse pm3.exe ───────────────────────────────────────────────────────
+// ─── Browse pm3 binary ─────────────────────────────────────────────────────
 elBrowse.addEventListener('click', async () => {
-    const p = await api.openFile([{ name: 'PM3 Client', extensions: ['exe'] }, { name: 'All', extensions: ['*'] }]);
+    const p = await api.openFile([
+        { name: 'PM3 Client', extensions: ['exe', '*'] },
+        { name: 'All Files', extensions: ['*'] }
+    ]);
     if (p) {
         elPath.value = p;
         validatePath(p);
@@ -143,12 +163,12 @@ function validatePath(p) {
         return;
     }
     const lower = p.toLowerCase();
-    const ok = lower.endsWith('proxmark3.exe') || lower.endsWith('pm3.exe') || lower.includes('proxmark3') || lower.includes('pm3');
+    const ok = lower.endsWith('proxmark3.exe') || lower.endsWith('pm3.exe') || lower.endsWith('proxmark3') || lower.endsWith('pm3') || lower.includes('proxmark3') || lower.includes('pm3');
     if (ok) {
         elPathHint.textContent = typeof i18n !== 'undefined' ? i18n.t('connect.path_ok') : '✓ Eseguibile Proxmark3 riconosciuto';
         elPathHint.className = 'input-hint ok';
     } else {
-        elPathHint.textContent = typeof i18n !== 'undefined' ? i18n.t('connect.path_warn') : 'Assicurati che sia proxmark3.exe (o pm3.exe)';
+        elPathHint.textContent = typeof i18n !== 'undefined' ? i18n.t('connect.path_warn') : 'Assicurati che sia proxmark3 (o proxmark3.exe)';
         elPathHint.className = 'input-hint error';
     }
 }
@@ -166,12 +186,12 @@ async function doConnect() {
     const comPort = elPort.value.trim();
 
     if (!pm3Path) {
-        setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.path_error') : 'Specifica il percorso di proxmark3.exe', 'error');
+        setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.path_error') : 'Specifica il percorso del client Proxmark3', 'error');
         elPath.focus();
         return;
     }
     if (!comPort) {
-        setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.port_error') : 'Seleziona una porta COM', 'error');
+        setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.port_error') : 'Seleziona una porta COM / tty', 'error');
         return;
     }
 
@@ -179,7 +199,7 @@ async function doConnect() {
     elConnect.disabled = true;
     const connectingLabel = typeof i18n !== 'undefined' ? i18n.t('connect.connecting_btn') : 'Connessione in corso…';
     elConnect.innerHTML = `<div class="spinner"></div> ${connectingLabel}`;
-    setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.starting_pm3', { port: comPort }) : `Avvio proxmark3.exe su ${comPort}…`, 'info');
+    setStatus(typeof i18n !== 'undefined' ? i18n.t('connect.starting_pm3', { port: comPort }) : `Avvio Proxmark3 su ${comPort}…`, 'info');
 
     // Stop auto-scan
     if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }

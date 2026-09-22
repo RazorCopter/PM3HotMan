@@ -9,7 +9,7 @@
   
   [![Release](https://img.shields.io/github/v/release/RazorCopter/PM3HotMan?style=for-the-badge&color=7c3aed)](https://github.com/RazorCopter/PM3HotMan/releases)
   [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&color=06b6d4)](https://www.gnu.org/licenses/gpl-3.0)
-  [![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg?style=for-the-badge&logo=windows)](https://github.com/RazorCopter/PM3HotMan/releases)
+  [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey.svg?style=for-the-badge&logo=linux)](https://github.com/RazorCopter/PM3HotMan/releases)
 </div>
 
 <br/>
@@ -24,9 +24,10 @@
 
 ## ✨ Premium Features
 
-- **🚀 Zero Configuration**: PM3 HotMan bundles the underlying Proxmark3 engine. Just install the setup and it will automatically detect the bundled `proxmark3.exe`. No MSYS2 required.
+- **🚀 Zero Configuration (Windows)**: PM3 HotMan bundles the underlying Proxmark3 engine for Windows. Just install the setup and it will automatically detect the bundled client.
+- **🐧 Native Linux Support**: Runs natively on Linux via Electron with native serial port scanning and support for your local Proxmark3 installation.
 - **💎 Cyberpunk UI & Glassmorphism**: A dark-mode, neon-accented interface designed for hackers who care about aesthetics as much as performance.
-- **🔌 Auto-Connection**: Automatically scans for available COM ports and visually detects your Proxmark3 hardware.
+- **🔌 Auto-Connection & Smart Device Detection**: Automatically scans for available COM/tty ports and visually highlights your genuine Proxmark3 hardware (`9AC4:4B8F`).
 - **🗂 Structured Parsing**: Say goodbye to walls of raw text! PM3 HotMan parses the PM3 output in real-time and displays beautifully structured cards containing UIDs, keys, tag types, and dumped files.
 - **📂 One-Click Dumps**: Easily locate and open your dumped binary and JSON files directly from the UI. Dumps are safely stored in your `Documents` folder.
 - **💾 Session Persistence**: Parsed results are cached per command. Switch between tasks without losing your data.
@@ -48,6 +49,90 @@ We provide a self-contained NSIS installer for Windows. You don't need to instal
 4. Plug in your Proxmark3, select your COM port, and click **Connect**.
 
 > **Note**: This application uses the **Iceman Fork** engine under the hood.
+
+---
+
+## 🐧 Native Linux Support & Setup
+
+PM3 HotMan runs natively on Linux (Ubuntu, Debian, Kali, Arch, Fedora, etc.) thanks to its modern Electron core.
+
+### 1. Prerequisites & Serial Permissions
+
+#### A. Install Node.js (v18+)
+```bash
+# Ubuntu / Debian / Kali:
+sudo apt update && sudo apt install -y nodejs npm
+```
+
+#### B. Grant Serial Port Permissions
+Linux restricts access to serial communication devices (`/dev/ttyACM*`) by default:
+```bash
+# Ubuntu / Debian / Kali / Linux Mint:
+sudo usermod -aG dialout $USER
+
+# Arch Linux / Manjaro / Fedora:
+sudo usermod -aG uucp $USER
+```
+> ⚠️ **Important**: Log out and log back in (or reboot) for group changes to take effect.
+
+#### C. Prevent ModemManager Conflicts & Setup udev Rules
+`ModemManager` may attempt to send AT commands to your Proxmark3 when plugged in, locking the port. Install the official udev rules:
+```bash
+sudo cp /path/to/proxmark3/driver/77-pm3-usb-device.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+### 2. Native Proxmark3 Client
+On Linux, HotMan interfaces with your native Linux `proxmark3` binary (ELF executable), typically located at:
+- `/usr/local/bin/proxmark3`
+- `/usr/bin/proxmark3`
+- Or compiled in your local git checkout: `~/proxmark3/client/proxmark3`
+
+If you haven't compiled the client yet, follow the standard Iceman compilation steps:
+```bash
+git clone https://github.com/RfidResearchGroup/proxmark3.git
+cd proxmark3
+make clean && make client
+sudo make install
+```
+
+### 3. Launching PM3 HotMan on Linux
+
+```bash
+# Clone and enter the repository
+git clone https://github.com/RazorCopter/PM3HotMan.git
+cd PM3HotMan/pm3-gui
+
+# Install dependencies and start
+npm install
+npm start
+```
+
+You can also build standalone Linux packages (`AppImage` and `.deb`):
+```bash
+npm run build:linux
+```
+
+### 4. Connection Screen Setup on Linux
+
+1. **Proxmark3 Client Path**: Enter the path to your native Linux binary (e.g. `/usr/local/bin/proxmark3`).
+   > ⛔ **Do not select `proxmark3.exe` on Linux**: `.exe` files are Windows PE binaries and cannot be executed natively.
+2. **Serial Port**: Choose the device labeled with `PROXMARK3` (usually `/dev/ttyACM0` with ID `9AC4:4B8F`).
+   > ⚠️ **Avoid LTE/WWAN modems**: Laptop cellular modems (such as Fibocom, Quectel, Sierra Wireless) often register as `/dev/ttyACM1`. Selecting a modem will result in a connection failure (`Exit code 2`).
+3. Click **Connect to Proxmark3**.
+
+---
+
+### ❓ Troubleshooting: "proxmark3 exited with code 2"
+
+If you encounter `Errore: proxmark3 uscito con codice 2` (Exit code 2) when connecting:
+1. **Check the port**: Make sure `/dev/ttyACM0` (`proxmark.org` / `9AC4:4B8F`) is selected, and NOT `/dev/ttyACM1` (e.g. `FIBOCOM` LTE modem).
+2. **Check the executable**: Verify that you are pointing to the native Linux executable (`proxmark3`) and not a Windows file (`proxmark3.exe`). Test it in terminal: `/usr/local/bin/proxmark3 -p /dev/ttyACM0 -c 'hw version'`.
+3. **Check permissions**: Run `groups` in terminal. Ensure `dialout` (or `uucp`) is listed.
+4. **Check ModemManager**: Run `sudo systemctl stop ModemManager` temporarily to see if it was holding the serial lock.
+
+---
 
 ---
 

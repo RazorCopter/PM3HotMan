@@ -148,10 +148,18 @@ async function scanComPorts() {
 // ─── PM3 Process Management ────────────────────────────────────────────────────
 
 /**
- * Build the environment block needed by proxmark3.exe.
- * proxmark3.exe is an MSYS2 binary - bash.exe and msys DLLs must be on PATH.
+ * Build the environment block needed by the Proxmark3 client.
+ * On Windows, proxmark3.exe is an MSYS2 binary - bash.exe and msys DLLs must be on PATH.
+ * On Linux / macOS, we retain the native system environment.
  */
 function buildPm3Env(pm3Dir) {
+    if (process.platform !== 'win32') {
+        return {
+            ...process.env,
+            PATH: [pm3Dir, process.env.PATH || ''].join(path.delimiter),
+            TERM: 'dumb',
+        };
+    }
     const libsDir  = path.join(pm3Dir, 'libs');
     const shellDir = path.join(libsDir, 'shell');
     // Usa la cartella userData dell'app Electron come HOME in modo che Proxmark3
@@ -326,13 +334,14 @@ async function spawnPm3(pm3Path, comPort) {
         });
         test.on('exit', (code) => {
             if (timedOut) return;
+            const clientName = path.basename(pm3Path);
             // Exit 0 or any output = connected
             const connected = (code === 0) || output.length > 10;
             resolve({
                 success: connected,
                 pid: test.pid,
                 fallback: true,
-                error: connected ? null : `proxmark3.exe uscito con codice ${code}`,
+                error: connected ? null : `${clientName} uscito con codice ${code}`,
             });
         });
 
@@ -669,9 +678,29 @@ ipcMain.handle('dialog:saveFile', async (event, { filters, defaultPath: dp }) =>
 ipcMain.handle('pm3:defaultPath', async () => {
     const fs = require('fs');
     const activeClient = updater.getActiveClientPath(engineRoot);
-    if (activeClient) return activeClient;
-    // Se l'app è pacchettizzata usa process.resourcesPath, altrimenti __dirname
+    if (activeClient && fs.existsSync(activeClient)) return activeClient;
+
     const baseDir = app.isPackaged ? process.resourcesPath : __dirname;
+
+    if (process.platform !== 'win32') {
+        const linuxCandidates = [
+            '/usr/local/bin/proxmark3',
+            '/usr/bin/proxmark3',
+            path.join(os.homedir(), 'proxmark3', 'client', 'proxmark3'),
+            path.join(baseDir, '..', 'client', 'proxmark3'),
+            path.join(baseDir, 'bin', 'proxmark3'),
+        ];
+        for (const c of linuxCandidates) {
+            if (fs.existsSync(c)) return c;
+        }
+        try {
+            const { execSync } = require('child_process');
+            const whichOut = execSync('which proxmark3 2>/dev/null', { encoding: 'utf8' }).trim();
+            if (whichOut && fs.existsSync(whichOut)) return whichOut;
+        } catch (_) {}
+        return '/usr/local/bin/proxmark3';
+    }
+
     const candidates = [
         path.join(baseDir, 'bin', 'ProxLatest', 'client', 'proxmark3.exe'),
         path.join(baseDir, '..', 'ProxLatest', 'client', 'proxmark3.exe'),

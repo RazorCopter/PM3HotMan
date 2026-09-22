@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "build": "electron-builder --win"
+    "build": "electron-builder --win",
+    "build:linux": "electron-builder --linux AppImage deb"
   },
   "build": {
     "appId": "com.pm3hotman.app",
@@ -18,6 +19,13 @@
     "win": {
       "target": "nsis",
       "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
     },
     "nsis": {
       "oneClick": false,

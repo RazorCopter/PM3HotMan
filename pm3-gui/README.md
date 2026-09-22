@@ -1,19 +1,27 @@
 # PM3 HotMan GUI
 
-GUI desktop premium per Windows che wrappa il client `pm3.exe` di **Proxmark3 (Iceman Fork)**.
+GUI desktop premium per Windows e Linux che wrappa il client `proxmark3` di **Proxmark3 (Iceman Fork)**.
 
 ## Prerequisiti
 
 - **Node.js** (v18+): https://nodejs.org/
-- **pm3.exe** compilato (dal repo principale oppure da https://www.proxmarkbuilds.org/)
+- **Client Proxmark3 compilato**:
+  - Su **Windows**: binario `proxmark3.exe` (incluso nel bundle o da https://www.proxmarkbuilds.org/)
+  - Su **Linux**: binario ELF nativo compilato con `make clean && make client` (o installato in `/usr/local/bin/proxmark3`)
+- Su **Linux**: Permessi seriali concessi al proprio utente (`sudo usermod -aG dialout $USER` su Debian/Ubuntu/Kali o `sudo usermod -aG uucp $USER` su Arch/Fedora).
 
 ## Setup e avvio
 
-```powershell
+```bash
 cd pm3-gui
 npm install
 npm start
 ```
+
+### Build eseguibili e installer
+
+- **Windows (.exe installer)**: `npm run build`
+- **Linux (AppImage / .deb)**: `npm run build:linux`
 
 ## Funzionalità
 
